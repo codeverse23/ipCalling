@@ -20,7 +20,7 @@ module.exports.login = async (req, res) => {
     }
 
     // Compare the provided password with the hashed password in the database
-    const isMatch = await bcrypt.compare(password, findAdmin.password);
+    const isMatch = await password ===findAdmin.password
     if (!isMatch) {
       return res.json({
         statusCode: 400,
