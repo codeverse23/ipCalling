@@ -3,7 +3,7 @@ const { jwtToken } = require("../helper/jwt");
 const admin = require("../model/admin");
 const notification = require("../model/notification");
 const system = require("../model/system");
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 module.exports.login = async (req, res) => {
   try {
