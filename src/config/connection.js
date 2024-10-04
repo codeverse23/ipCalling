@@ -1,20 +1,19 @@
-import mongoose from "mongoose";
-import dotenv from "dotenv";
+const mongoose = require("mongoose");
 
-dotenv.config();  // Correct way to configure dotenv
+// MongoDB connection URI
+const uri = "mongodb+srv://bksb075:6R9TiltpuMHOnqGD@cluster0.4fq9c.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
-const { MONGODBURI } = process.env;  // Access MONGODBURI from process.env
+// Connect to MongoDB
+mongoose.connect(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+})
+.then(() => {
+    console.log("MongoDB connected successfully");
+})
+.catch((err) => {
+    console.error("Error connecting to MongoDB:", err);
+});
 
-console.log("1");
-
-const db = mongoose.connect(MONGODBURI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => {
-    console.log("Database Connected");
-  })
-  .catch((err) => {
-    console.log("ERROR:", err);
-  });
-
-export default db;  // Use ES6 export
-
-
+// Export mongoose to use elsewhere in the app
+module.exports = mongoose;
