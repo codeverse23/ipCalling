@@ -1,9 +1,14 @@
 const express = require("express");
 const app = express();
 const port = 5000;
-const router = require("./src/router/index")
+const router = require("./src/router/index");
 require("./src/config/connection");
-const mongoose =require("mongoose")
+const mongoose = require("mongoose");
+const cors = require("cors");  // Import the CORS middleware
+
+// Enable CORS for all routes and origins
+app.use(cors());
+
 async function connectDB() {
     try {
         await mongoose.connect("mongodb+srv://bksb075:6R9TiltpuMHOnqGD@cluster0.4fq9c.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0", {
@@ -19,14 +24,18 @@ async function connectDB() {
 // Call the async function to connect to the DB
 connectDB();
 
-app.listen(port, () => {
-    console.log(`app is listinging the port ${port}`)
-});
-
-app.get("/", (req, res) => {
-    res.send("this is for the testing perpose")
-});
-
+// Middleware for parsing JSON bodies
 app.use(express.json());
-app.use("/api/v1",router)
 
+// Define your routes
+app.use("/api/v1", router);
+
+// Test route
+app.get("/", (req, res) => {
+    res.send("This is for testing purposes");
+});
+
+// Start the server
+app.listen(port, () => {
+    console.log(`App is listening on port ${port}`);
+});
