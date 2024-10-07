@@ -144,7 +144,8 @@ module.exports.forgotPasswordSendOtp = async (req, res) => {
     const findAdmin = await admin.findOne({ email: email });
     if (!findAdmin) {
       res.json({
-        status: 400,
+        status:false,
+        statusCode: 400,
         message: "Admin Not Found",
         data: ""
       })
