@@ -139,7 +139,8 @@ module.exports.updateAdminProfile = async (req, res) => {
 module.exports.forgotPasswordSendOtp = async (req, res) => {
   try {
     const { email } = req.body;
-    var otp = Math.floor(1000 + Math.random() * 9000);
+    //var otp = Math.floor(1000 + Math.random() * 9000);
+    var otp=12345;
     const findAdmin = await admin.findOne({ email: email });
     if (!findAdmin) {
       res.json({
@@ -154,7 +155,8 @@ module.exports.forgotPasswordSendOtp = async (req, res) => {
     return res.json({
       status: true,
       statusCode: 200,
-      message: "mail send successfully"
+      message: "mail send successfully",
+      otp:otp
     })
   } catch (err) {
     res.json({
@@ -176,7 +178,7 @@ module.exports.varifyOtp = async (req, res) => {
         data: ""
       })
     };
-    if (!findAdmin.otp === otp) {
+    if (findAdmin.otp !== otp) {
       return res.json({
         status: false,
         statusCode: 400,
