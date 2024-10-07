@@ -33,8 +33,8 @@ module.exports.login = async (req, res) => {
     const token = jwtToken(email, password); // Replace this with your actual token generation logic
 
     return res.json({
-      status: 200,
-      statusCode: true,
+      statusCode: 200,
+      status: true,
       message: "Login Successfully",
       data: token
     });
