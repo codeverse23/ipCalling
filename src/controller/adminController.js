@@ -74,7 +74,8 @@ module.exports.changPassword = async (req, res) => {
     const findAdmin = await admin.findOne({ _id: adminId });
     if (!findAdmin) {
       res.json({
-        status: 400,
+        statusCode: 400,
+        status: true,
         message: "Admin Not Found",
         data: ""
       })
@@ -88,14 +89,14 @@ module.exports.changPassword = async (req, res) => {
       })
     } else {
       res.json({
-        status: 400,
+        status: true,
         message: "please enter currect password",
         data: ""
       })
     }
   } catch (err) {
     res.json({
-      status: 400,
+      status: true,
       message: "Internal Server Error",
       data: err.message
     })
@@ -144,7 +145,8 @@ module.exports.forgotPasswordSendOtp = async (req, res) => {
     const findAdmin = await admin.findOne({ email: email });
     if (!findAdmin) {
       res.json({
-        status: 400,
+        status: false,
+        statusCode:400,
         message: "Admin Not Found",
         data: ""
       })
@@ -160,7 +162,7 @@ module.exports.forgotPasswordSendOtp = async (req, res) => {
     })
   } catch (err) {
     res.json({
-      status: 400,
+      status: true,
       message: "Internal Server Error",
       data: err.message
     })
@@ -173,7 +175,7 @@ module.exports.varifyOtp = async (req, res) => {
     const findAdmin = await admin.findOne({ email: email });
     if (!findAdmin) {
       res.json({
-        status: 400,
+        status: true,
         message: "Admin Not Found",
         data: ""
       })
@@ -193,7 +195,7 @@ module.exports.varifyOtp = async (req, res) => {
     })
   } catch (err) {
     res.json({
-      status: 400,
+      status: true,
       message: "Internal Server Error",
       data: err.message
     })
@@ -206,7 +208,7 @@ module.exports.addSubAdmin = async (req, res) => {
     const findAdmin = await admin.findOne({ _id: adminId });
     if (!findAdmin) {
       res.json({
-        status: 400,
+        status: true,
         message: "Admin Not Found",
         data: ""
       })
@@ -228,7 +230,7 @@ module.exports.addSubAdmin = async (req, res) => {
     })
   } catch (err) {
     res.json({
-      status: 400,
+      status: true,
       message: "Internal Server Error",
       data: err.message
     })
@@ -241,7 +243,7 @@ module.exports.subAdminList = async (req, res) => {
     const findAdmin = await admin.findOne({ _id: adminId });
     if (!findAdmin) {
       return res.json({
-        status: 400,
+        status: true,
         message: "Admin Not Found",
         data: ""
       })
@@ -256,7 +258,7 @@ module.exports.subAdminList = async (req, res) => {
 
   } catch (err) {
     res.json({
-      status: 400,
+      status: true,
       message: "Internal Server Error",
       data: err.message
     })
@@ -278,7 +280,7 @@ module.exports.blockSubAdmin = async (req, res) => {
     const findSubAdmin = await admin.findOne({ _id: subAdminId });
     if (!findSubAdmin) {
       return res.json({
-        status: 400,
+        status: true,
         statusCode: false,
         message: "SubAdmin Not Found"
       })
@@ -293,7 +295,7 @@ module.exports.blockSubAdmin = async (req, res) => {
 
   } catch (err) {
     res.json({
-      status: 400,
+      status: true,
       statusCode: false,
       message: err.message
     })
@@ -816,7 +818,7 @@ module.exports.deleteSytemInfo = async (req, res) => {
     });
     if (!findAdmin) {
       return res.json({
-        status: 400,
+        status: true,
         statusCode: false,
         message: "Admin Not found"
       })
