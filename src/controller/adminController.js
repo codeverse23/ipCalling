@@ -40,7 +40,7 @@ module.exports.login = async (req, res) => {
     });
 
   } catch (err) {
-    res.json({
+    return res.json({
       statusCode: 400,
       status: false,
       message: err.message
@@ -52,14 +52,14 @@ module.exports.adminProfile = async (req, res) => {
   try {
     const adminId = req.query.adminId;
     const findAdmin = await admin.findOne({ _id: adminId });
-    res.json({
+    return res.json({
       statusCode: 200,
       status: true,
       message: "Admin Profile Shown Successfully",
       data: findAdmin
     })
   } catch (err) {
-    res.json({
+    return res.json({
       statusCode: 400,
       status: false,
       message: "Internal Server Error",
@@ -73,29 +73,29 @@ module.exports.changPassword = async (req, res) => {
     const { adminId, password, newPassword } = req.body;
     const findAdmin = await admin.findOne({ _id: adminId });
     if (!findAdmin) {
-      res.json({
+      return res.json({
         statusCode: 400,
-        status: true,
+        status: fasle,
         message: "Admin Not Found",
         data: ""
       })
     }
     if (findAdmin.password === password) {
       const updatePassword = await admin.findOneAndUpdate({ _id: adminId }, { $set: { password: newPassword } });
-      res.send({
+      return res.json({
         status: 200,
         message: "New Password Update Successfully",
         data: ""
       })
     } else {
-      res.json({
+      return res.json({
         status: true,
         message: "please enter currect password",
         data: ""
       })
     }
   } catch (err) {
-    res.json({
+    return res.json({
       status: true,
       message: "Internal Server Error",
       data: err.message
@@ -129,7 +129,7 @@ module.exports.updateAdminProfile = async (req, res) => {
     })
 
   } catch (err) {
-    res.json({
+    return res.json({
       status: true,
       statusCode: 400,
       message: err.message
@@ -144,7 +144,7 @@ module.exports.forgotPasswordSendOtp = async (req, res) => {
     var otp=12345;
     const findAdmin = await admin.findOne({ email: email });
     if (!findAdmin) {
-      res.json({
+      return res.json({
         status: false,
         statusCode:400,
         message: "Admin Not Found",
@@ -161,7 +161,7 @@ module.exports.forgotPasswordSendOtp = async (req, res) => {
       otp:otp
     })
   } catch (err) {
-    res.json({
+    return res.json({
       status: true,
       message: "Internal Server Error",
       data: err.message
@@ -174,7 +174,7 @@ module.exports.varifyOtp = async (req, res) => {
     const { email, otp, password } = req.body;
     const findAdmin = await admin.findOne({ email: email });
     if (!findAdmin) {
-      res.json({
+      return res.json({
         status: true,
         message: "Admin Not Found",
         data: ""
@@ -194,7 +194,7 @@ module.exports.varifyOtp = async (req, res) => {
       message: "Password Change Successfully "
     })
   } catch (err) {
-    res.json({
+    return res.json({
       status: true,
       message: "Internal Server Error",
       data: err.message
@@ -207,7 +207,7 @@ module.exports.addSubAdmin = async (req, res) => {
     const { adminId, name, email, mobile, password } = req.body;
     const findAdmin = await admin.findOne({ _id: adminId });
     if (!findAdmin) {
-      res.json({
+      return res.json({
         status: true,
         message: "Admin Not Found",
         data: ""
@@ -229,7 +229,7 @@ module.exports.addSubAdmin = async (req, res) => {
       message: "Sub Admin Add Successfully"
     })
   } catch (err) {
-    res.json({
+    return res.json({
       status: true,
       message: "Internal Server Error",
       data: err.message
@@ -257,7 +257,7 @@ module.exports.subAdminList = async (req, res) => {
     });
 
   } catch (err) {
-    res.json({
+    return res.json({
       status: true,
       message: "Internal Server Error",
       data: err.message
@@ -280,8 +280,8 @@ module.exports.blockSubAdmin = async (req, res) => {
     const findSubAdmin = await admin.findOne({ _id: subAdminId });
     if (!findSubAdmin) {
       return res.json({
-        status: true,
-        statusCode: false,
+        status: false,
+        statusCode: 400,
         message: "SubAdmin Not Found"
       })
     };
@@ -294,9 +294,9 @@ module.exports.blockSubAdmin = async (req, res) => {
     });
 
   } catch (err) {
-    res.json({
-      status: true,
-      statusCode: false,
+    return res.json({
+      status: flase,
+      statusCode: 400,
       message: err.message
     })
   }
@@ -315,7 +315,7 @@ module.exports.subAdminUnblock = async (req, res) => {
     }
     const findSubAdmin = await admin.findOne({ _id: subAdminId });
     if (!findSubAdmin) {
-      res.json({
+      return res.json({
         status: false,
         statusCode: 400,
         message: "Sub Admin Not found"
@@ -330,7 +330,7 @@ module.exports.subAdminUnblock = async (req, res) => {
     })
 
   } catch (err) {
-    res.json({
+    return res.json({
       status: false,
       statusCode: 400,
       message: err.message
@@ -343,14 +343,14 @@ module.exports.deleteSubAdmin = async (req, res) => {
     const { adminId, subAdminId } = req.body;
     const findAdmin = await admin.findOne({ _id: adminId });
     if (!findAdmin) {
-      res.json({
+      return res.json({
         status: true,
         statusCode: 400,
         message: "Admin Not Found"
       })
     };
     await admin.deleteOne({ _id: subAdminId })
-    res.json({
+    return res.json({
       status: true,
       statuscode: 200,
       message: "subAdmin delete successfully"
@@ -369,14 +369,14 @@ module.exports.updateSubProfile = async (req, res) => {
     const { adminId, subAdminId, name, email, mobile, password } = req.body;
     const findAdmin = await admin.findOne({ _id: adminId });
     if (!findAdmin) {
-      res.json({
-        status: true,
+      return res.json({
+        status: false,
         statusCode: 400,
         message: "Admin Not Found"
       })
     };
     await admin.deleteOne({ _id: subAdminId })
-    res.json({
+    return res.json({
       status: true,
       statuscode: 200,
       message: "subAdmin delete successfully"
@@ -405,7 +405,7 @@ module.exports.addPermissions = async (req, res) => {
     const subAdmin = await admin.findOne({ _id: subAdminId });
 
     if (!subAdmin) {
-      res.send({
+      return res.json({
         status: false,
         statusCode: 400,
         message: "Sub admin Not found"
@@ -413,14 +413,14 @@ module.exports.addPermissions = async (req, res) => {
     }
 
     await admin.updateOne({ _id: subAdminId }, { $set: { permissions: permissions } });
-    res.json({
+    return res.json({
       status: true,
       statusCode: 200,
       message: "Sub admin Permition Add successfully"
     })
 
   } catch (err) {
-    res.send({
+    return res.json({
       status: true,
       statusCode: 400,
       message: err.message
@@ -444,7 +444,7 @@ module.exports.removePermissions = async (req, res) => {
     const subAdmin = await admin.findOne({ _id: subAdminId });
 
     if (!subAdmin) {
-      res.send({
+      return res.json({
         status: false,
         statusCode: 400,
         message: "Sub admin Not found"
@@ -452,14 +452,14 @@ module.exports.removePermissions = async (req, res) => {
     }
 
     await admin.updateOne({ _id: subAdminId }, { $set: { permissions: permissions } });
-    res.json({
+    return res.json({
       status: true,
       statusCode: 200,
       message: "Sub admin Permition Remove successfully"
     })
 
   } catch (err) {
-    res.send({
+    return res.json({
       status: true,
       statusCode: 400,
       message: err.message
@@ -482,7 +482,7 @@ module.exports.changSubAdminPassword = async (req, res) => {
 
     const subAdmin = await admin.findOne({ _id: subAdminId });
     if (!subAdmin) {
-      res.send({
+      return res.json({
         status: false,
         statusCode: 400,
         message: "Sub admin Not found"
@@ -490,14 +490,14 @@ module.exports.changSubAdminPassword = async (req, res) => {
     }
 
     await admin.updateOne({ _id: subAdminId }, { $set: { password: password } });
-    res.json({
+    return res.json({
       status: true,
       statusCode: 200,
       message: "Sub admin Password Change successfully"
     })
 
   } catch (err) {
-    res.send({
+    return res.json({
       status: true,
       statusCode: 400,
       message: err.message
@@ -520,7 +520,7 @@ module.exports.updateSubAdminProfile = async (req, res) => {
 
     const subAdmin = await admin.findOne({ _id: subAdminId });
     if (!subAdmin) {
-      res.send({
+      return res.json({
         status: false,
         statusCode: 400,
         message: "Sub admin Not found"
@@ -535,14 +535,14 @@ module.exports.updateSubAdminProfile = async (req, res) => {
 
     await admin.updateOne({ _id: subAdminId }, { $set: updateFields });
 
-    res.json({
+    return res.json({
       status: true,
       statusCode: 200,
       message: "Sub Admin Profile Update successfully"
     })
 
   } catch (err) {
-    res.send({
+    return res.json({
       status: true,
       statusCode: 400,
       message: err.message
@@ -565,7 +565,7 @@ module.exports.getSubAdminPermissions = async (req, res) => {
 
     const subAdmin = await admin.findOne({ _id: subAdminId });
     if (!subAdmin) {
-      res.send({
+      return res.json({
         status: false,
         statusCode: 400,
         message: "Sub admin Not found"
@@ -574,7 +574,7 @@ module.exports.getSubAdminPermissions = async (req, res) => {
 
     const data = await admin.findOne({ _id: subAdminId }, { permissions: 1 });
 
-    res.json({
+    return res.json({
       status: true,
       statusCode: 200,
       message: "Sub Admin permissions show successfully",
@@ -582,7 +582,7 @@ module.exports.getSubAdminPermissions = async (req, res) => {
     })
 
   } catch (err) {
-    res.send({
+    return res.json({
       status: true,
       statusCode: 400,
       message: err.message
@@ -610,13 +610,13 @@ module.exports.addRole = async (req, res) => {
       })
     }
     await admin.updateOne({ _id: subAdminId }, { role: role });
-    res.json({
+    return res.json({
       status: true,
       statusCode: 200,
       message: "Role update successfully"
     })
   } catch (err) {
-    res.json({
+    return res.json({
       status: false,
       statusCode: 400,
       message: err.message
@@ -637,7 +637,7 @@ module.exports.addNotification = async (req, res) => {
     };
 
     await notification.insertMany({ message: message })
-    res.json({
+    return res.json({
       status: true,
       statusCode: 200,
       message: "Notification Add Successfully"
@@ -673,13 +673,13 @@ module.exports.updateNotification = async (req, res) => {
       })
     };
     await Notification.updateOne({ _id: notificationId }, { $set: { message: message } });
-    res.json({
+    return res.json({
       status: true,
       statusCode: 200,
       message: "Notification Update Successfully"
     })
   } catch (err) {
-    res.json({
+    return res.json({
       status: false,
       statusCode: 400,
       message: err.message
@@ -708,13 +708,13 @@ module.exports.deleteNotification = async (req, res) => {
       })
     };
     await Notification.deleteOne({ _id: notificationId });
-    res.json({
+    return res.json({
       status: true,
       statusCode: 200,
       message: "Notification delete Successfully"
     })
   } catch (err) {
-    res.json({
+    return res.json({
       status: false,
       statusCode: 400,
       message: err.message
@@ -736,14 +736,14 @@ module.exports.notificationList = async (req, res) => {
 
     const list = await Notification.find({}, { _id: 0, __v: 0, updatedAt: 0, createdAt: 0 });
 
-    res.json({
+    return res.json({
       status: true,
       statusCode: 200,
       message: "Notification show  Successfully",
       data: list
     })
   } catch (err) {
-    res.json({
+    return res.json({
       status: false,
       statusCode: 400,
       message: err.message
@@ -765,14 +765,14 @@ module.exports.addSystemInfo = async (req, res) => {
 
 
     let data = await system.create({ name: name })
-    res.json({
+    return res.json({
       status: true,
       statusCode: 200,
       message: "Notification show  Successfully",
       data: data
     })
   } catch (err) {
-    res.json({
+    return res.json({
       status: false,
       statusCode: 400,
       message: err.message
@@ -786,7 +786,7 @@ module.exports.systemInfoList = async (req, res) => {
     const findAdmin = await admin.findOne({ _id: adminId });
 
     if (!findAdmin) {
-      res.json({
+      return res.json({
         status: false,
         statusCode: 400,
         message: "Admin Not Found"
@@ -794,14 +794,14 @@ module.exports.systemInfoList = async (req, res) => {
     };
 
     const list = await system.find({}, { name: 1, _id: 0 });
-    res.json({
+    return res.json({
       status: true,
       statusCode: 400,
       message: "System Info List Shown Successfully",
       data: list
     })
   } catch (err) {
-    res.send({
+    return res.json({
       status: false,
       statusCode: 400,
       message: err.message
@@ -834,14 +834,14 @@ module.exports.deleteSytemInfo = async (req, res) => {
     };
 
     const test = await system.deleteOne({ _id: systemId });
-    res.json({
+    return res.json({
       status: true,
       statusCode: 400,
       message: "System info delete successfully"
     })
 
   } catch (err) {
-    res.json({
+    return res.json({
       status: false,
       statusCode: 400,
       message: err.message
