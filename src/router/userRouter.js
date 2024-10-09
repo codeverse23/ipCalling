@@ -13,6 +13,7 @@ userRouter.post("/login", userController.login);
 userRouter.put(
   "/changPassword",
   varifyToken,
+  verifyRoles(roleList.ADMIN),
   userController.changPassword
 );
 
