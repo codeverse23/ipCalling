@@ -1,36 +1,31 @@
-const roleList = require("../src/consts/autho.js");
-
-const verifyRoles = (...allowedRoles) => { 
+const verifyRoles = (...allowedRoles) => {
     return (req, res, next) => {
         try {
-            console.log("2")
-            console.log(role,"req.roles")
-            if (!req?.role) {
+            // Check if user has a role
+            if (!req?.user?.role) {
                 return res.json({
                     status: false,
                     statusCode: 400,
-                    message: "Unauthorized Access"
+                    message: "Unauthorized Access - No Role Found"
                 });
             }
 
-            const rolesArray = [...allowedRoles];
-            const isAdmin = allowedRoles.includes(roleList.ADMIN);
-            let result = req.roles.some(role => rolesArray.includes(role)) || isAdmin;
-
-            if (!result) {
+            // Check if user's role is in the allowedRoles array
+            const userRole = req.user.role;
+            if (!allowedRoles.includes(userRole)) {
                 return res.json({
                     status: false,
-                    statusCode: 400,
-                    message: "Unauthorized Access"
+                    statusCode: 403,  // Forbidden
+                    message: "Unauthorized Access - Role Not Allowed"
                 });
             }
 
-            next();
+            next(); // User is authorized, move to the next middleware/controller
         } catch (error) {
             return res.json({
                 status: false,
-                statusCode: 400,
-                message: "Unauthorized Access"
+                statusCode: 500,
+                message: "Unauthorized Access - Server Error"
             });
         }
     };

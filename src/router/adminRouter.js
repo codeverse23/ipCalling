@@ -4,6 +4,8 @@ const adminController = require("../controller/adminController");
 const { varifyToken } = require("../helper/varifyTokenFn");
 const multer = require('multer');
 const path = require('path');
+const verifyRoles = require("../../middlewares/verifyRoles");
+const roleList = require("../../src/consts/autho");
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -20,7 +22,7 @@ adminRouter.post("/login", adminController.login);
 adminRouter.get("/userList", varifyToken, adminController.userList)
 adminRouter.delete("/deleteUser", varifyToken, adminController.deleteUser)
 adminRouter.patch("/blockUnblockUser", varifyToken, adminController.blockUnblockUser)
-adminRouter.get("/adminProfile", varifyToken, adminController.adminProfile);
+adminRouter.get("/adminProfile", varifyToken, verifyRoles(roleList.ADMIN), adminController.adminProfile);
 
 
 adminRouter.post("/changPassword", adminController.changPassword);
