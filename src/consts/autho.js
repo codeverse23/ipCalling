@@ -1,7 +1,7 @@
 const roleList = {
-    "ADMIN" : "ADMIN",
-    "SUBADMIN":"SUBADMIN",
-    "USER" :"USER",
-}
+    "ADMIN": "ADMIN",
+    "SUBADMIN": "SUBADMIN",
+    "USER": "USER"
+};
 
-module.export= { roleList }
+module.exports =  roleList ;  // Ensure module.exports is used correctly

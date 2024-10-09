@@ -4,6 +4,8 @@ const adminController = require("../controller/adminController");
 const { varifyToken } = require("../helper/varifyTokenFn");
 const multer = require('multer');
 const path = require('path');
+const verifyRoles = require("../../middlewares/verifyRoles");
+const roleList = require("../../src/consts/autho");
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -17,16 +19,20 @@ const upload = multer({ storage: storage });
 
 
 adminRouter.post("/login", adminController.login);
-adminRouter.get("/adminProfile", varifyToken, adminController.adminProfile);
+adminRouter.get("/userList", varifyToken, adminController.userList)
+adminRouter.delete("/deleteUser", varifyToken, adminController.deleteUser)
+adminRouter.patch("/blockUnblockUser", varifyToken, adminController.blockUnblockUser)
+adminRouter.get("/adminProfile", varifyToken, verifyRoles(roleList.ADMIN), adminController.adminProfile);
+
+
 adminRouter.post("/changPassword", adminController.changPassword);
 adminRouter.post("/SendOtp", adminController.forgotPasswordSendOtp);
 adminRouter.post("/varifyOtp", adminController.varifyOtp);
 
 adminRouter.post("/addSubAdmin", varifyToken, adminController.addSubAdmin)
-adminRouter.get("/subAdminList", varifyToken, adminController.subAdminList)
-adminRouter.patch("/subAdminBlock", varifyToken, adminController.blockSubAdmin)
-adminRouter.patch("/subAdminUnblock", varifyToken, adminController.blockSubAdmin)
-adminRouter.delete("/deleteSubAdmin", varifyToken, adminController.deleteSubAdmin)
+
+
+adminRouter.post("/addNotification", varifyToken, adminController.addNotification);
 adminRouter.post("/addPermissions", varifyToken, adminController.addPermissions)
 adminRouter.put("/removePermissions", varifyToken, adminController.removePermissions)
 adminRouter.put("/changSubAdminPassword", varifyToken, adminController.changSubAdminPassword)
@@ -34,7 +40,7 @@ adminRouter.put("/changSubAdminPassword", varifyToken, adminController.changSubA
 adminRouter.put("/updateSubAdminProfile", varifyToken, adminController.updateSubAdminProfile)
 adminRouter.get("/getSubAdminPermissions", varifyToken, adminController.getSubAdminPermissions)
 adminRouter.post("/addRole", varifyToken, adminController.addRole);
-adminRouter.post("/addNotification", varifyToken, adminController.addNotification);
+
 adminRouter.put("/updateNotification", varifyToken, adminController.updateNotification);
 adminRouter.delete("/deleteNotification", varifyToken, adminController.deleteNotification);
 adminRouter.put("/updateAdminProfile",varifyToken,upload.single('file'),adminController.updateAdminProfile);
