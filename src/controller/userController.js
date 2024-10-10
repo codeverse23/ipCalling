@@ -8,12 +8,12 @@ module.exports.signUp = async (req, res) => {
   
     var otp = Math.floor(1000 + Math.random() * 9000);
     // Find user by email
-    const findUser = await user.findOne({ email: email, username: username });
+    const findUser = await user.findOne({ email: email  });
     if (findUser) {
       return res.json({
         statusCode: 400,
         status: false,
-        message: "User Name or mobile number Is Already Exist",
+        message: "This Email Is Already Exist",
       });
     }
     const userObj = { name, username, email, mobile, password, otp };
@@ -110,7 +110,7 @@ module.exports.varifyOtp = async (req, res) => {
 
 module.exports.login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password,username } = req.body;
 
     const findUser = await user.findOne({ email: email });
     if (!findUser) {
