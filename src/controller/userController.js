@@ -34,6 +34,44 @@ module.exports.signUp = async (req, res) => {
   }
 };
 
+module.exports.checkUsername = async (req, res) => {
+  try {
+    const { username } = req.body;
+    
+    // Validate if username length is at least 4 characters
+    if (username.length < 4) {
+      return res.json({
+        statusCode: 400,
+        status: false,
+        message: "Username must be at least 4 characters long",
+      });
+    }
+
+    // Check if username is already taken
+    const findUser = await user.findOne({ name: username });
+    if (findUser) {
+      return res.json({
+        statusCode: 400,
+        status: false,
+        message: "Username is already taken Please try another username",
+      });
+    }
+
+    return res.json({
+      statusCode: 200,
+      status: true,
+      message: "Username is available",
+    });
+
+  } catch (err) {
+    return res.json({
+      statusCode: 500,
+      status: false,
+      message: err.message,
+    });
+  }
+};
+
 module.exports.varifyOtp = async (req, res) => {
   try {
     const { email, otp } = req.body;
