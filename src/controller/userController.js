@@ -37,8 +37,7 @@ module.exports.signUp = async (req, res) => {
 module.exports.checkUsername = async (req, res) => {
   try {
     const { username } = req.body;
-    
-    // Validate if username length is at least 4 characters
+
     if (username.length < 4) {
       return res.json({
         statusCode: 400,
@@ -118,6 +117,8 @@ module.exports.login = async (req, res) => {
         { username: username }
       ]
     });
+    
+    console.log(findUser,"findUser")
     if (!findUser) {
       return res.json({
         statusCode: 400,
@@ -144,8 +145,7 @@ module.exports.login = async (req, res) => {
     }
 
     // Generate JWT token
-    const role = findUser.role;
-    email=findUser.email
+    const role =findUser.role
     const token = jwtToken(email, password, role); // Replace this with your actual token generation logic
 
     return res.json({
