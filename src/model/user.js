@@ -6,12 +6,20 @@ const userSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    
+    username:{
+      type: String,
+      required: true,
+      unique: true
+    },
+
     email: {
       type: String,
       required: true,
       trim: true,
       unique: true, // Ensures that each email is unique in the collection
     },
+
     mobile: {
       type: Number,
       required: true,
