@@ -25,7 +25,6 @@ module.exports.login = async (req, res) => {
 
     // Compare the provided password with the hashed password in the database
     const isMatch = password === findAdmin.password;
-    console.log(isMatch, "isMatchisMatch", password, findAdmin.password);
     if (!isMatch) {
       return res.json({
         statusCode: 400,
@@ -142,7 +141,6 @@ module.exports.adminProfile = async (req, res) => {
 module.exports.createNotification = async (req, res) => {
   try {
     const { adminId, title, message } = req.body;
-    console.log(req.body, "req.body");
     const findAdmin = await user.findOne({ _id: adminId });
     if (!findAdmin) {
       return res.json({
@@ -278,8 +276,6 @@ module.exports.changPassword = async (req, res) => {
 module.exports.updateAdminProfile = async (req, res) => {
   try {
     const { adminId, name, email, mobile } = req.file;
-    console.log(req.file, "gggg");
-    console.log("this is test file test test test test test ");
     const findAdmin = await admin.findOne({ _id: adminId });
     if (!findAdmin) {
       return res.json({
@@ -392,7 +388,6 @@ module.exports.addSubAdmin = async (req, res) => {
     }
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
-    console.log("this is test file");
     await admin.insertMany({
       name: name,
       email: email,
@@ -922,7 +917,6 @@ module.exports.deleteSytemInfo = async (req, res) => {
 module.exports.addprivecyPolicy =async(req,res)=>{
   try{
     const {adminId,policyMessage}=req.body;
-    console.log(req.body);
     const findAdmin =await user.findOne({_id:adminId});
     if(!findAdmin){
       return res.json({

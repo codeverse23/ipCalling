@@ -71,6 +71,61 @@ module.exports.checkUsername = async (req, res) => {
   }
 };
 
+module.exports.updateUsername = async (req, res) => {
+  try {
+    const { userId, username } = req.body;
+
+    // Check if username is at least 4 characters long
+    if (username.length < 4) {
+      return res.json({
+        statusCode: 400,
+        status: false,
+        message: "Username must be at least 4 characters long",
+      });
+    }
+
+    // Find user by userId
+    const findUser = await user.findOne({ _id: userId });
+    if (!findUser) {
+      return res.json({
+        statusCode: 400,
+        status: false,
+        message: "User not found",
+      });
+    }
+
+    // Check if the new username is already taken by another user
+    const usernameExists = await user.findOne({ username: username });
+    if (usernameExists) {
+      return res.json({
+        statusCode: 400,
+        status: false,
+        message: "Username is already taken",
+      });
+    }
+
+    // Update the user's username
+    let updateUser = await user.updateOne(
+      { _id: userId },
+      { $set: { username: username } }
+    );
+
+    return res.json({
+      statusCode: 200,
+      status: true,
+      message: "Username is updated successfully",
+      data: updateUser,
+    });
+  } catch (err) {
+    return res.json({
+      statusCode: 500,
+      status: false,
+      message: err.message,
+    });
+  }
+};
+
+
 module.exports.varifyOtp = async (req, res) => {
   try {
     const { email, otp } = req.body;
@@ -118,7 +173,6 @@ module.exports.login = async (req, res) => {
       ]
     });
     
-    console.log(findUser,"findUser")
     if (!findUser) {
       return res.json({
         statusCode: 400,
