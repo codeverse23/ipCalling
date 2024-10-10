@@ -48,7 +48,7 @@ module.exports.checkUsername = async (req, res) => {
     }
 
     // Check if username is already taken
-    const findUser = await user.findOne({ name: username });
+    const findUser = await user.findOne({ username: username });
     if (findUser) {
       return res.json({
         statusCode: 400,
@@ -146,7 +146,7 @@ module.exports.login = async (req, res) => {
     // Generate JWT token
     const role = findUser.role;
     email=findUser.email
-    const token = jwtToken(username,email, password, role); // Replace this with your actual token generation logic
+    const token = jwtToken(email, password, role); // Replace this with your actual token generation logic
 
     return res.json({
       statusCode: 200,

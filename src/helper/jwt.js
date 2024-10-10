@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-module.exports.jwtToken = (username, email, password,role) => {
+module.exports.jwtToken = ( email, password,role) => {
   const token = jwt.sign(
     {
       username:username,
