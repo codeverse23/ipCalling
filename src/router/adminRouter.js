@@ -49,6 +49,11 @@ adminRouter.post("/addSystemInfo", varifyToken, adminController.addSystemInfo)
 adminRouter.get("/systemInfoList", varifyToken, adminController.systemInfoList)
 adminRouter.delete("/deleteSytemInfo", varifyToken, adminController.deleteSytemInfo);
 
-
+adminRouter.post(
+    "/addprivecyPolicy",
+    varifyToken,
+    verifyRoles(roleList.ADMIN),
+    adminController.addprivecyPolicy
+  );
 
 module.exports = adminRouter;
