@@ -5,7 +5,9 @@ const notification = require("../model/notification");
 const system = require("../model/system");
 const bcrypt = require("bcryptjs");
 const user = require("../model/user");
+const privacyPolicy = require("../model/privacyPolicy");
 
+////////////////////////////admin crud/////////////////////////////////////////////
 module.exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -233,11 +235,6 @@ module.exports.addNotification = async (req, res) => {
     });
   }
 };
-
-
-
-
-
 
 module.exports.changPassword = async (req, res) => {
   try {
@@ -919,3 +916,34 @@ module.exports.deleteSytemInfo = async (req, res) => {
     });
   }
 };
+
+///////////////////////////////privacyPolicy//////////////
+module.exports.addprivecyPolicy =async(req,res)=>{
+  try{
+    const {adminId,policyMessage}=req.body;
+    console.log(req.body);
+    const findAdmin =await user.findOne({_id:adminId});
+    if(!findAdmin){
+      return res.json({
+        status:false,
+        statusCode:400,
+        message:"Admin Not Found"
+      })
+    };
+
+    const data= await privacyPolicy.create({policyMessage});
+    return res.json({
+      status: true,
+      statusCode: 200,
+      message:"Privacy Policy Add successfully" ,
+      data:data
+    })
+
+  }catch (err) {
+    return res.json({
+      status: false,
+      statusCode: 400,
+      message: err.message,
+    });
+  }
+}

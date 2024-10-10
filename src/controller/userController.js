@@ -110,9 +110,14 @@ module.exports.varifyOtp = async (req, res) => {
 
 module.exports.login = async (req, res) => {
   try {
-    const { email, password,username } = req.body;
+    let { email, password,username } = req.body;
 
-    const findUser = await user.findOne({ email: email });
+    const findUser = await user.findOne({
+      $or: [
+        { email: email },
+        { username: username }
+      ]
+    });
     if (!findUser) {
       return res.json({
         statusCode: 400,
@@ -140,7 +145,8 @@ module.exports.login = async (req, res) => {
 
     // Generate JWT token
     const role = findUser.role;
-    const token = jwtToken(email, password, role); // Replace this with your actual token generation logic
+    email=findUser.email
+    const token = jwtToken(username,email, password, role); // Replace this with your actual token generation logic
 
     return res.json({
       statusCode: 200,

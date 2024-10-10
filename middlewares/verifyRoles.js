@@ -2,6 +2,7 @@ const verifyRoles = (...allowedRoles) => {
     return (req, res, next) => {
         try {
             // Check if user has a role
+            console.log(req?.user,"req?.user?.role")
             if (!req?.user?.role) {
                 return res.json({
                     status: false,
