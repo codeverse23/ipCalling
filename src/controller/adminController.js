@@ -6,6 +6,7 @@ const system = require("../model/system");
 const bcrypt = require("bcryptjs");
 const user = require("../model/user");
 const privacyPolicy = require("../model/privacyPolicy");
+const termCondition = require("../model/termCondition.js");
 
 ////////////////////////////admin crud/////////////////////////////////////////////
 module.exports.login = async (req, res) => {
@@ -946,4 +947,94 @@ module.exports.addprivecyPolicy =async(req,res)=>{
       message: err.message,
     });
   }
-}
+};
+
+module.exports.updatePrivecyPolicy =async(req,res)=>{
+  try{
+    const {adminId,policyId,policyMessage}=req.body;
+
+    const findAdmin =await user.findOne({_id:adminId});
+    if(!findAdmin){
+      return res.json({
+        status:false,
+        statusCode:400,
+        message:"Admin Not Found"
+      })
+    };
+
+    const data= await privacyPolicy.updateOne({_id:policyId},{$set:{policyMessage}});
+    return res.json({
+      status: true,
+      statusCode: 200,
+      message:"Privacy Policy Add successfully" ,
+      data:data
+    })
+
+  }catch (err) {
+    return res.json({
+      status: false,
+      statusCode: 400,
+      message: err.message,
+    });
+  }
+};
+
+module.exports.addtermCondition =async(req,res)=>{
+  try{
+    const {adminId,termConditionMessage}=req.body;
+    const findAdmin =await user.findOne({_id:adminId});
+    if(!findAdmin){
+      return res.json({
+        status:false,
+        statusCode:400,
+        message:"Admin Not Found"
+      })
+    };
+
+    const data= await termCondition.create({termConditionMessage});
+    return res.json({
+      status: true,
+      statusCode: 200,
+      message:"TermConditionMessage Add successfully" ,
+      data:data
+    })
+
+  }catch (err) {
+    return res.json({
+      status: false,
+      statusCode: 400,
+      message: err.message,
+    });
+  }
+};
+
+module.exports.updateTermCondition =async(req,res)=>{
+  try{
+    const {adminId,termConditionId,termConditionMessage}=req.body;
+
+    const findAdmin =await user.findOne({_id:adminId});
+    if(!findAdmin){
+      return res.json({
+        status:false,
+        statusCode:400,
+        message:"Admin Not Found"
+      })
+    };
+
+    const data= await termCondition.updateOne({_id:termConditionId},{$set:{termConditionMessage}});
+    return res.json({
+      status: true,
+      statusCode: 200,
+      message:"Privacy Policy Add successfully" ,
+      data:data
+    })
+
+  }catch (err) {
+    return res.json({
+      status: false,
+      statusCode: 400,
+      message: err.message,
+    });
+  }
+};
+

@@ -56,4 +56,24 @@ adminRouter.post(
     adminController.addprivecyPolicy
   );
 
+  adminRouter.put(
+    "/updatePrivecyPolicy",
+    varifyToken,
+    verifyRoles(roleList.ADMIN),
+    adminController.updatePrivecyPolicy
+  );
+
+  adminRouter.post(
+    "/addtermCondition",
+    varifyToken,
+    verifyRoles(roleList.ADMIN),
+    adminController.addtermCondition
+  );
+
+  adminRouter.put(
+    "/updateTermCondition",
+    varifyToken,
+    verifyRoles(roleList.ADMIN),
+    adminController.addtermCondition
+  );
 module.exports = adminRouter;
