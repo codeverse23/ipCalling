@@ -127,7 +127,6 @@ module.exports.updateUsername = async (req, res) => {
   }
 };
 
-
 module.exports.varifyOtp = async (req, res) => {
   try {
     const { email, otp } = req.body;
