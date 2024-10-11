@@ -309,7 +309,7 @@ module.exports.forgotPasswordSendOtp = async (req, res) => {
     const { email } = req.body;
     //var otp = Math.floor(1000 + Math.random() * 9000);
     var otp = 12345;
-    const findAdmin = await admin.findOne({ email: email });
+    const findAdmin = await user.findOne({ email: email });
     if (!findAdmin) {
       return res.json({
         status: false,
@@ -320,7 +320,7 @@ module.exports.forgotPasswordSendOtp = async (req, res) => {
     }
     const name = findAdmin.name;
     sendOtp(email, otp, name);
-    await admin.findOneAndUpdate(
+    await user.findOneAndUpdate(
       { _id: findAdmin._id },
       { $set: { otp: otp } }
     );
