@@ -309,7 +309,7 @@ module.exports.forgotPasswordSendOtp = async (req, res) => {
 
 module.exports.forgotChangePassword = async (req, res) => {
   try {
-    const { email, otp, password } = req.body;
+    const { email, password } = req.body;
     const findUser = await user.findOne({ email: email });
     if (!findUser) {
       return res.json({
@@ -318,13 +318,7 @@ module.exports.forgotChangePassword = async (req, res) => {
         data: "",
       });
     }
-    if (findUser.otp !== otp) {
-      return res.json({
-        status: false,
-        statusCode: 400,
-        message: "please provide currect otp",
-      });
-    }
+
     const role=findUser.role;
     await user.findOneAndUpdate(
       { _id: findUser._id },
