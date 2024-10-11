@@ -189,6 +189,7 @@ module.exports.login = async (req, res) => {
       });
     }
     // Compare the provided password with the hashed password in the database
+  
     const isMatch = password === findUser.password;
     if (!isMatch) {
       return res.json({

@@ -7,6 +7,7 @@ const bcrypt = require("bcryptjs");
 const user = require("../model/user");
 const privacyPolicy = require("../model/privacyPolicy");
 const termCondition = require("../model/termCondition.js");
+const ans =require("../model/askQuestion.js")
 
 ////////////////////////////admin crud/////////////////////////////////////////////
 module.exports.login = async (req, res) => {
@@ -1032,3 +1033,31 @@ module.exports.updateTermCondition =async(req,res)=>{
   }
 };
 
+module.exports.addQusAns=async(req,res)=>{
+  try{
+    const {adminId,}=req.body;
+    const findAdmin =await user.findOne({_id:adminId});
+    if(!findAdmin){
+      return res.json({
+        status:false,
+        statusCode:400,
+        message:"Admin Not Found"
+      })
+    };
+
+    const data= await ans
+    return res.json({
+      status: true,
+      statusCode: 200,
+      message:"TermConditionMessage Add successfully" ,
+      data:data
+    })
+
+  }catch (err) {
+    return res.json({
+      status: false,
+      statusCode: 400,
+      message: err.message,
+    });
+  }
+};
