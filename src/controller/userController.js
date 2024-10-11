@@ -17,6 +17,7 @@ module.exports.signUp = async (req, res) => {
       });
     }
     const userObj = { name, username, email, mobile, password, otp };
+    
     let data = await user.create(userObj);
     sendOtp(email, otp, name);
     return res.json({
@@ -24,6 +25,7 @@ module.exports.signUp = async (req, res) => {
       status: true,
       message: "User Create Successfully",
       data: data,
+      
     });
   } catch (err) {
     return res.json({
@@ -144,14 +146,18 @@ module.exports.varifyOtp = async (req, res) => {
         message: "please provide currect otp",
       });
     }
+
     await user.findOneAndUpdate(
       { _id: findUser._id },
       { $set: { isVerified: true } }
     );
+    const role=findUser.role;
     return res.json({
       status: true,
       statusCode: 200,
       message: "User Varify Successfully",
+      role:role
+      
     });
   } catch (err) {
     return res.json({
@@ -282,6 +288,7 @@ module.exports.forgotPasswordSendOtp = async (req, res) => {
       });
     }
     const name = findUser.name;
+    const role=findUser.role;
     sendOtp(email, otp, name);
     await user.findOneAndUpdate({ _id: findUser._id }, { $set: { otp: otp } });
     return res.json({
@@ -289,6 +296,7 @@ module.exports.forgotPasswordSendOtp = async (req, res) => {
       statusCode: 200,
       message: "mail send successfully",
       otp: otp,
+      role:role
     });
   } catch (err) {
     return res.json({
@@ -317,6 +325,7 @@ module.exports.forgotChangePassword = async (req, res) => {
         message: "please provide currect otp",
       });
     }
+    const role=findUser.role;
     await user.findOneAndUpdate(
       { _id: findUser._id },
       { $set: { password: password } }
@@ -325,6 +334,7 @@ module.exports.forgotChangePassword = async (req, res) => {
       status: true,
       statusCode: 200,
       message: "Password Change Successfully ",
+      role:role
     });
   } catch (err) {
     return res.json({
