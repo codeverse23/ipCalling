@@ -1,5 +1,7 @@
 const { sendOtp } = require("../helper/email");
 const { jwtToken } = require("../helper/jwt");
+const privacyPolicy = require("../model/privacyPolicy");
+const termCondition = require("../model/termCondition.js");
 const user = require("../model/user");
 
 module.exports.signUp = async (req, res) => {
@@ -336,5 +338,59 @@ module.exports.forgotChangePassword = async (req, res) => {
       message: "Internal Server Error",
       data: err.message,
     });
+  }
+};
+
+module.exports.privacyPolicyList=async(req,res)=>{
+  try{
+    const {userId}=req.body;
+    const findUser=await user.findOne({_id:userId});
+    if(!findUser){
+      return res.json({
+        statusCode:400,
+        status:true,
+        message:"user not found"
+      })
+    }
+    const data = await privacyPolicy.find();
+    return res.json({
+      statusCode:200,
+      status:true,
+      message:"Privacy policy show successfully",
+      data:data
+    })
+  }catch(err){
+   return res.json({
+    statusCode:400,
+    status:false,
+    message:err.message
+   })
+  }
+};
+
+module.exports.termConditionList=async(req,res)=>{
+  try{
+    const {userId}=req.body;
+    const findUser=await user.findOne({_id:userId});
+    if(!findUser){
+      return res.json({
+        statusCode:400,
+        status:true,
+        message:"user not found"
+      })
+    }
+    const data = await termCondition.find();
+    return res.json({
+      statusCode:200,
+      status:true,
+      message:"Term ConditionList List show successfully",
+      data:data
+    })
+  }catch(err){
+   return res.json({
+    statusCode:400,
+    status:false,
+    message:err.message
+   })
   }
 };
