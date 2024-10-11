@@ -169,7 +169,7 @@ module.exports.login = async (req, res) => {
     const findUser = await user.findOne({
       $or: [
         { email: email },
-        { username: username }
+        // { username: username }
       ]
     });
     
@@ -190,6 +190,7 @@ module.exports.login = async (req, res) => {
     }
     // Compare the provided password with the hashed password in the database
     const isMatch = password === findUser.password;
+    console.log(password,findUser.password,"isMatchisMatchisMatch")
     if (!isMatch) {
       return res.json({
         statusCode: 400,
