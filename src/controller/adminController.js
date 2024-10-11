@@ -1035,7 +1035,7 @@ module.exports.updateTermCondition =async(req,res)=>{
 
 module.exports.addQusAns=async(req,res)=>{
   try{
-    const {adminId,}=req.body;
+    const {adminId,qus,ans}=req.body;
     const findAdmin =await user.findOne({_id:adminId});
     if(!findAdmin){
       return res.json({
@@ -1045,7 +1045,9 @@ module.exports.addQusAns=async(req,res)=>{
       })
     };
 
-    const data= await ans
+    const data= await ans.create({
+
+    })
     return res.json({
       status: true,
       statusCode: 200,

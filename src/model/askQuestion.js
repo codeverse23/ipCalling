@@ -14,4 +14,4 @@ const qusAnsSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports=new mongoose.model("ans",qusAnsSchema);
+module.exports=new mongoose.model("qusAns",qusAnsSchema);
