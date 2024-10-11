@@ -7,6 +7,7 @@ const bcrypt = require("bcryptjs");
 const user = require("../model/user");
 const privacyPolicy = require("../model/privacyPolicy");
 const termCondition = require("../model/termCondition.js");
+const qusans =require("../model/askQuestion.js")
 
 ////////////////////////////admin crud/////////////////////////////////////////////
 module.exports.login = async (req, res) => {
@@ -472,8 +473,8 @@ module.exports.updateSubProfile = async (req, res) => {
 
 module.exports.addPermissions = async (req, res) => {
   try {
-    const { adminId, subAdminId, permissions } = req.body;
-    const findAdmin = await admin.findOne({ _id: adminId });
+    const { adminId, userId, permissions } = req.body;
+    const findAdmin = await user.findOne({ _id: adminId });
     if (!findAdmin) {
       return res.json({
         status: false,
@@ -482,24 +483,24 @@ module.exports.addPermissions = async (req, res) => {
       });
     }
 
-    const subAdmin = await admin.findOne({ _id: subAdminId });
+    const subAdmin = await user.findOne({ _id: userId });
 
     if (!subAdmin) {
       return res.json({
         status: false,
         statusCode: 400,
-        message: "Sub admin Not found",
+        message: "User Id Not Found",
       });
     }
 
-    await admin.updateOne(
-      { _id: subAdminId },
+    await user.updateOne(
+      { _id: userId },
       { $set: { permissions: permissions } }
     );
     return res.json({
       status: true,
       statusCode: 200,
-      message: "Sub admin Permition Add successfully",
+      message: "User Permissions Add successfully",
     });
   } catch (err) {
     return res.json({
@@ -512,9 +513,9 @@ module.exports.addPermissions = async (req, res) => {
 
 module.exports.removePermissions = async (req, res) => {
   try {
-    const { adminId, subAdminId, permissions } = req.body;
+    const { adminId, userId, permissions } = req.body;
 
-    const findAdmin = await admin.findOne({ _id: adminId });
+    const findAdmin = await user.findOne({ _id: adminId });
     if (!findAdmin) {
       return res.json({
         status: false,
@@ -523,24 +524,24 @@ module.exports.removePermissions = async (req, res) => {
       });
     }
 
-    const subAdmin = await admin.findOne({ _id: subAdminId });
+    const findUser = await user.findOne({ _id: userId });
 
-    if (!subAdmin) {
+    if (!findUser) {
       return res.json({
         status: false,
         statusCode: 400,
-        message: "Sub admin Not found",
+        message: "User Not found",
       });
     }
 
-    await admin.updateOne(
-      { _id: subAdminId },
+    await user.updateOne(
+      { _id: userId },
       { $set: { permissions: permissions } }
     );
     return res.json({
       status: true,
       statusCode: 200,
-      message: "Sub admin Permition Remove successfully",
+      message: "User Permition Remove successfully",
     });
   } catch (err) {
     return res.json({
@@ -1032,3 +1033,107 @@ module.exports.updateTermCondition =async(req,res)=>{
   }
 };
 
+module.exports.addQusAns=async(req,res)=>{
+  try{
+    const {adminId,qus,ans}=req.body;
+    const findAdmin =await user.findOne({_id:adminId});
+    if(!findAdmin){
+      return res.json({
+        status:false,
+        statusCode:400,
+        message:"Admin Not Found"
+      })
+    };
+
+    const data = await qusans.create({
+    qus,
+    ans
+    })
+
+    console.log(data,"data")
+    return res.json({
+      status: true,
+      statusCode: 200,
+      message:"TermConditionMessage Add successfully" ,
+      data:data
+    })
+
+  }catch (err) {
+    return res.json({
+      status: false,
+      statusCode: 400,
+      message: err.message,
+    });
+  }
+};
+
+module.exports.updateQusAns=async(req,res)=>{
+  try{
+    const {adminId,qusAnsId,qus,ans}=req.body;
+    const findAdmin =await user.findOne({_id:adminId});
+    if(!findAdmin){
+      return res.json({
+        status:false,
+        statusCode:400,
+        message:"Admin Not Found"
+      })
+    };
+
+    const findqusAns = await qusans.findOne({_id:qusAnsId})
+    if(!findqusAns){
+      return res.json({
+        status:false,
+        statusCode:400,
+        message:"Admin Not Found"
+      })
+    } 
+
+    const qusAnsObj={}
+    if(qus) qusAnsObj.qus;
+    if(ans) qusAnsObj.ans;
+  
+    console.log(qusAnsObj,"qusAnsObj")
+    const data = await qusans.updateOne({id:adminId},{$set:qusAnsObj});
+    return res.json({
+      status: true,
+      statusCode: 200,
+      message:"qusAns Update successfully" ,
+      data:data
+    })
+
+  }catch (err) {
+    return res.json({
+      status: false,
+      statusCode: 400,
+      message: err.message,
+    });
+  }
+};
+
+module.exports.deleteQusAns = async(req,res)=>{
+  try{
+    const{adminId,qusAnsId}=req.body;
+    const findAdmin =user.findOne({_id:adminId});
+    if(!findAdmin){
+      return res.json({
+        status:false,
+        statusCode:400,
+        message:"Admin not found"
+      })
+    }
+    const deleteQus=await qusans.deleteOne({_id:qusAnsId});
+    console.log(deleteQus,"deleteQus")
+    return res.json({
+      statusCode:400,
+      status:true,
+      message:"qusAns Delete successfully"
+    })
+
+  }catch(err){
+    return res.json({
+      status:false,
+      statusCode:400,
+      message:err.message
+    })
+  }
+}

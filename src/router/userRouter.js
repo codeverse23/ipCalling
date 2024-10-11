@@ -23,6 +23,16 @@ userRouter.put(
   userController.updateUsername
 );
 
+userRouter.post(
+  "/privacyPolicyList",
+  varifyToken,
+  userController.privacyPolicyList
+);
 
+userRouter.post(
+  "/termConditionList",
+  varifyToken,
+  userController.termConditionList
+);
 
 module.exports = userRouter;
