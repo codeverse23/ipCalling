@@ -39,7 +39,19 @@ adminRouter.post(
   adminController.totalActiveUser
 );
 
+adminRouter.post(
+  "/totalDeactiveUser",
+  varifyToken,
+  verifyRoles(roleList.ADMIN),
+  adminController.totalDeactiveUser
+);
 
+adminRouter.post(
+  "/totalPendingReq",
+  varifyToken,
+  verifyRoles(roleList.ADMIN),
+  adminController.totalPendingReq
+);
 adminRouter.post("/changPassword", adminController.changPassword);
 adminRouter.post("/SendOtp", adminController.forgotPasswordSendOtp);
 adminRouter.post("/varifyOtp", adminController.varifyOtp);
@@ -88,17 +100,20 @@ adminRouter.put(
   varifyToken,
   adminController.updateNotification
 );
+
 adminRouter.delete(
   "/deleteNotification",
   varifyToken,
   adminController.deleteNotification
 );
+
 adminRouter.put(
   "/updateAdminProfile",
   varifyToken,
   upload.single("file"),
   adminController.updateAdminProfile
 );
+
 adminRouter.get(
   "/notificationList",
   varifyToken,
@@ -106,6 +121,7 @@ adminRouter.get(
 );
 adminRouter.post("/addSystemInfo", varifyToken, adminController.addSystemInfo);
 adminRouter.get("/systemInfoList", varifyToken, adminController.systemInfoList);
+
 adminRouter.delete(
   "/deleteSytemInfo",
   varifyToken,
