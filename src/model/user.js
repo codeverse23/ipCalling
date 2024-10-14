@@ -39,9 +39,13 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "USER",
     },
-    isBlock: {
+    isActive: {
       type: Boolean,
       default: false,
+    },
+    isPending:{
+      type: String,
+      default: "Pending",
     },
     isDeleted:{
       type: Boolean,

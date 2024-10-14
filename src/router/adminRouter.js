@@ -32,6 +32,14 @@ adminRouter.get(
   adminController.adminProfile
 );
 
+adminRouter.post(
+  "/totalActiveUser",
+  varifyToken,
+  verifyRoles(roleList.ADMIN),
+  adminController.totalActiveUser
+);
+
+
 adminRouter.post("/changPassword", adminController.changPassword);
 adminRouter.post("/SendOtp", adminController.forgotPasswordSendOtp);
 adminRouter.post("/varifyOtp", adminController.varifyOtp);

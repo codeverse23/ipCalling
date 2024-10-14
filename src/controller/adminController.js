@@ -7,7 +7,7 @@ const bcrypt = require("bcryptjs");
 const user = require("../model/user");
 const privacyPolicy = require("../model/privacyPolicy");
 const termCondition = require("../model/termCondition.js");
-const qusans =require("../model/askQuestion.js")
+const qusans =require("../model/askQuestion.js");
 
 ////////////////////////////admin crud/////////////////////////////////////////////
 module.exports.login = async (req, res) => {
@@ -1136,4 +1136,83 @@ module.exports.deleteQusAns = async(req,res)=>{
       message:err.message
     })
   }
-}
+};
+
+module.exports.totalActiveUser = async(req,res)=>{
+  try{
+    const {adminId}=req.body;
+    const findAdmin = await user.findOne({_id:adminId})
+    console.log(findAdmin,"findAdmin");
+    let activeUser = await user.find({isActive:true});
+    
+    return res.json({
+      status:true,
+      statusCode:200,
+      message:"All Active User Shown Successfully",
+      data:activeUser
+    })
+
+  }catch(error){
+    return res.json({
+      statusCode:400,
+      status:true,
+      message:error.message
+    })
+  }
+};
+
+module.exports.totaldeactiveUser = async(req,res)=>{
+  try{
+    const {adminId}=req.body;
+    const findAdmin = await user.findOne({_id:adminId})
+    console.log(findAdmin,"findAdmin");
+    let deActiveUser = await user.find({isActive:false});
+    
+    return res.json({
+      status:true,
+      statusCode:200,
+      message:"All Deactive User Shown Successfully",
+      data:deActiveUser
+    })
+
+  }catch(error){
+    return res.json({
+      statusCode:400,
+      status:true,
+      message:error.message
+    })
+  }
+};
+
+module.exports.totalPendingReq = async(req,res)=>{
+  try{
+    const {adminId}=req.body;
+    const findAdmin = await user.findOne({_id:adminId})
+    console.log(findAdmin,"findAdmin");
+    let deActiveUser = await user.find({isPending:"approved"});
+    
+    return res.json({
+      status:true,
+      statusCode:200,
+      message:"All Deactive User Shown Successfully",
+      data:deActiveUser
+    })
+
+  }catch(error){
+    return res.json({
+      statusCode:400,
+      status:true,
+      message:error.message
+    })
+  }
+};
+
+
+// 1. show total active user.
+// 4. show total deactive user.
+
+// 2. show total online user.
+// 3. according to online status update user collection.
+// 
+// 5. show total req pending.
+// 6.admin manage user account.
