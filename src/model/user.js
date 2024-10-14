@@ -39,9 +39,14 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "USER",
     },
-    isBlock: {
+    isActive: {
       type: Boolean,
       default: false,
+    },
+    isPending: {
+      type: String,
+      enum: ["Pending", "Approved"],
+      default: "Pending", 
     },
     isDeleted:{
       type: Boolean,
@@ -50,7 +55,9 @@ const userSchema = new mongoose.Schema(
     permissions:{
       type:[String],
       default:[]
-    }
+    },
+    lastActive: { type: Date, default: Date.now }, // Track last activity
+    status: { type: String, enum: ['active', 'inactive'], default: 'inactive' }, // Track active/inactive status
   },
   { timestamps: true }
 );

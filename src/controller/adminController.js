@@ -7,7 +7,7 @@ const bcrypt = require("bcryptjs");
 const user = require("../model/user");
 const privacyPolicy = require("../model/privacyPolicy");
 const termCondition = require("../model/termCondition.js");
-const qusans =require("../model/askQuestion.js")
+const qusans =require("../model/askQuestion.js");
 
 ////////////////////////////admin crud/////////////////////////////////////////////
 module.exports.login = async (req, res) => {
@@ -36,7 +36,16 @@ module.exports.login = async (req, res) => {
 
     const role = findAdmin.role;
     // Generate JWT token
-    const token = jwtToken(email, password, role); // Replace this with your actual token generation logic
+    const token = jwtToken(email, password, role); // Replace with your actual token generation logic
+
+    // Update the lastActive and mark the user as active
+    await user.findOneAndUpdate(
+      { email: email },
+      { 
+        lastActive: new Date(), // Set lastActive to current time
+        status: 'active' // Mark user as active
+      }
+    );
 
     return res.json({
       statusCode: 200,
@@ -1136,4 +1145,105 @@ module.exports.deleteQusAns = async(req,res)=>{
       message:err.message
     })
   }
-}
+};
+
+module.exports.totalActiveUser = async(req,res)=>{
+  try{
+    const {adminId} = req.body;
+    const findAdmin = await user.findOne({_id:adminId});
+
+    if(!findAdmin){
+      return res.json({
+        statusCode: 400,
+        status: false,
+        message: "Admin Not Found"
+      });
+    }
+
+    // Count the active users
+    let activeUserCount = await user.countDocuments({status: "active"});
+
+    return res.json({
+      status: true,
+      statusCode: 200,
+      message: "Active User Count Retrieved Successfully",
+      totalActiveUsers: activeUserCount
+    });
+
+  }catch(error){
+    return res.json({
+      statusCode: 400,
+      status: false,
+      message: error.message
+    });
+  }
+};
+
+module.exports.totalDeactiveUser = async(req,res)=>{
+  try{
+    const {adminId}=req.body;
+    const findAdmin = await user.findOne({_id:adminId})
+    console.log(findAdmin,"findAdmin");
+    let deActiveUser = await user.countDocuments({status:"inactive"});
+    
+    return res.json({
+      status:true,
+      statusCode:200,
+      message:"All Deactive User Shown Successfully",
+      data:deActiveUser
+    })
+
+  }catch(error){
+    return res.json({
+      statusCode:400,
+      status:true,
+      message:error.message
+    })
+  }
+};
+
+module.exports.totalPendingReq = async(req,res)=>{
+  try{
+    const {adminId}=req.body;
+    const findAdmin = await user.findOne({_id:adminId})
+    console.log(findAdmin,"findAdmin");
+    let deActiveUser = await user.countDocuments({isPending:"Pending"});
+    
+    return res.json({
+      status:true,
+      statusCode:200,
+      message:"All Pending Request Show Successfully",
+      data:deActiveUser
+    })
+
+  }catch(error){
+    return res.json({
+      statusCode:400,
+      status:true,
+      message:error.message
+    })
+  }
+};
+
+module.exports.totalApprovedReq = async(req,res)=>{
+  try{
+    const {adminId}=req.body;
+    const findAdmin = await user.findOne({_id:adminId})
+    console.log(findAdmin,"findAdmin");
+    let deActiveUser = await user.find({isPending:"Approved"});
+    
+    return res.json({
+      status:true,
+      statusCode:200,
+      message:"All Pending Req Show Successfully",
+      data:deActiveUser
+    })
+
+  }catch(error){
+    return res.json({
+      statusCode:400,
+      status:true,
+      message:error.message
+    })
+  }
+};

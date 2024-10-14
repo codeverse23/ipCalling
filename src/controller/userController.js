@@ -171,34 +171,20 @@ module.exports.varifyOtp = async (req, res) => {
 
 module.exports.login = async (req, res) => {
   try {
-    let { email, password,username } = req.body;
+    const { email, password } = req.body;
 
-    const findUser = await user.findOne({
-      $or: [
-        { email: email },
-        // { username: username }
-      ]
-    });
-    
-    if (!findUser) {
+    // Find admin by email
+    const findAdmin = await user.findOne({ email: email });
+    if (!findAdmin) {
       return res.json({
         statusCode: 400,
         status: false,
-        message: "User Not Found",
+        message: "Admin Not Found",
       });
     }
 
-    if (findUser.isVerified === false) {
-      return res.json({
-        statusCode: 400,
-        status: false,
-        message: "Please Verify Account",
-      });
-    }
     // Compare the provided password with the hashed password in the database
-  
-    const isMatch = password === findUser.password;
-    console.log(password,findUser.password,"isMatchisMatchisMatch")
+    const isMatch = password === findAdmin.password;
     if (!isMatch) {
       return res.json({
         statusCode: 400,
@@ -207,9 +193,18 @@ module.exports.login = async (req, res) => {
       });
     }
 
+    const role = findAdmin.role;
     // Generate JWT token
-    const role =findUser.role
-    const token = jwtToken(email, password, role); // Replace this with your actual token generation logic
+    const token = jwtToken(email, password, role); // Replace with your actual token generation logic
+
+    // Update the lastActive and mark the user as active
+    await user.findOneAndUpdate(
+      { email: email },
+      { 
+        lastActive: new Date(), // Set lastActive to current time
+        status: 'active' // Mark user as active
+      }
+    );
 
     return res.json({
       statusCode: 200,

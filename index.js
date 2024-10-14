@@ -5,7 +5,8 @@ const router = require("./src/router/index");
 require("./src/config/connection");
 const mongoose = require("mongoose");
 const cors = require("cors");  // Import the CORS middleware
-
+const cron = require('node-cron');
+const user = require("./src/model/user");
 // Enable CORS for all routes and origins
 app.use(cors());
 
@@ -38,4 +39,25 @@ app.get("/", (req, res) => {
 // Start the server
 app.listen(port, () => {
     console.log(`App is listening on port ${port}`);
+});
+
+
+cron.schedule('*/5 * * * *', async () => {
+    const now = new Date();
+    console.log("Running 1-minute inactivity check");
+
+    // 1 minute ago
+    const thartyMinuteAgo = new Date(now.getTime() - 30 * 60 * 1000); 
+
+    try {
+        // Find and mark users as inactive if their lastActive is older than 1 minute
+        const result = await user.updateMany(
+            { lastActive: { $lt: thartyMinuteAgo }, status: 'active' }, // Only active users inactive for 1+ minute
+            { $set: { status: 'inactive' } } // Mark them as inactive
+        );
+
+        console.log(`Marked ${result.nModified} users as inactive`);
+    } catch (error) {
+        console.error('Error marking users as inactive:', error);
+    }
 });
