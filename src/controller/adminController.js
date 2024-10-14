@@ -1212,7 +1212,7 @@ module.exports.totalPendingReq = async(req,res)=>{
     return res.json({
       status:true,
       statusCode:200,
-      message:"All Deactive User Shown Successfully",
+      message:"All Pending Request Show Successfully",
       data:deActiveUser
     })
 
@@ -1235,7 +1235,7 @@ module.exports.totalApprovedReq = async(req,res)=>{
     return res.json({
       status:true,
       statusCode:200,
-      message:"All Approved User Shown Successfully",
+      message:"All Pending Req Show Successfully",
       data:deActiveUser
     })
 
