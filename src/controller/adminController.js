@@ -8,6 +8,7 @@ const user = require("../model/user");
 const privacyPolicy = require("../model/privacyPolicy");
 const termCondition = require("../model/termCondition.js");
 const qusans =require("../model/askQuestion.js");
+const { model } = require("mongoose");
 
 ////////////////////////////admin crud/////////////////////////////////////////////
 module.exports.login = async (req, res) => {
@@ -1161,7 +1162,7 @@ module.exports.totalActiveUser = async(req,res)=>{
     }
 
     // Count the active users
-    let activeUserCount = await user.countDocuments({status: "active"});
+    let activeUserCount = await user.find({status: "active"},{name:1});
 
     return res.json({
       status: true,
@@ -1184,7 +1185,7 @@ module.exports.totalDeactiveUser = async(req,res)=>{
     const {adminId}=req.body;
     const findAdmin = await user.findOne({_id:adminId})
     console.log(findAdmin,"findAdmin");
-    let deActiveUser = await user.countDocuments({status:"inactive"});
+    let deActiveUser = await user.find({status:"inactive"},{name:1});
     
     return res.json({
       status:true,
@@ -1206,8 +1207,13 @@ module.exports.totalPendingReq = async(req,res)=>{
   try{
     const {adminId}=req.body;
     const findAdmin = await user.findOne({_id:adminId})
-    console.log(findAdmin,"findAdmin");
-    let deActiveUser = await user.countDocuments({isPending:"Pending"});
+    if(findAdmin){
+      return res.json({
+        status:true,
+        
+      })
+    }
+    let deActiveUser = await user.countDocuments({isPending:"Pending"},{});
     
     return res.json({
       status:true,
