@@ -1207,10 +1207,11 @@ module.exports.totalPendingReq = async(req,res)=>{
   try{
     const {adminId}=req.body;
     const findAdmin = await user.findOne({_id:adminId})
-    if(findAdmin){
+    if(!findAdmin){
       return res.json({
-        status:true,
-        
+        status:false,
+        statuscode:400,
+        message:"Admin Not Found"        
       })
     }
     let deActiveUser = await user.countDocuments({isPending:"Pending"},{});
