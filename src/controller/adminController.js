@@ -1214,7 +1214,7 @@ module.exports.totalPendingReq = async(req,res)=>{
         message:"Admin Not Found"        
       })
     }
-    let deActiveUser = await user.countDocuments({isPending:"Pending"},{});
+    let deActiveUser = await user.find({isPending:"Pending"},{});
     
     return res.json({
       status:true,
