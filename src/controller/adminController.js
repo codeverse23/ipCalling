@@ -386,10 +386,10 @@ module.exports.varifyOtp = async (req, res) => {
   }
 };
 
-module.exports.addSubAdmin = async (req, res) => {
+module.exports.addUser = async (req, res) => {
   try {
-    const { adminId, name, email, mobile, password } = req.body;
-    const findAdmin = await admin.findOne({ _id: adminId });
+    const { adminId, name,username, email, mobile, password } = req.body;
+    const findAdmin = await user.findOne({ _id: adminId });
     if (!findAdmin) {
       return res.json({
         status: true,
@@ -397,25 +397,25 @@ module.exports.addSubAdmin = async (req, res) => {
         data: "",
       });
     }
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-    await admin.insertMany({
+
+    await user.insertMany({
       name: name,
+      username,
       email: email,
       mobile: mobile,
-      password: hashedPassword,
-      role: "SubAdmin",
+      password: password,
     });
+
     return res.json({
       status: true,
       statusCode: 200,
-      message: "Sub Admin Add Successfully",
+      message: "User Add Successfully",
     });
+
   } catch (err) {
     return res.json({
       status: true,
-      message: "Internal Server Error",
-      data: err.message,
+      message: err.message       
     });
   }
 };
