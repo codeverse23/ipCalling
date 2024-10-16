@@ -52,6 +52,13 @@ adminRouter.post(
   verifyRoles(roleList.ADMIN),
   adminController.totalPendingReq
 );
+
+adminRouter.post(
+  "/deshboardCount",
+  varifyToken,
+  verifyRoles(roleList.ADMIN),
+  adminController.deshboardCount
+);
 adminRouter.post("/changPassword", adminController.changPassword);
 adminRouter.post("/SendOtp", adminController.forgotPasswordSendOtp);
 adminRouter.post("/varifyOtp", adminController.varifyOtp);

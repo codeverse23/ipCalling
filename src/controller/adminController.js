@@ -1148,6 +1148,48 @@ module.exports.deleteQusAns = async(req,res)=>{
   }
 };
 
+module.exports.deshboardCount = async(req,res)=>{
+  try{
+    const {adminId} = req.body;
+    const findAdmin = await user.findOne({_id:adminId});
+
+    if(!findAdmin){
+      return res.json({
+        statusCode: 400,
+        status: false,
+        message: "Admin Not Found"
+      });
+    }
+
+    // Count the active users
+    let userRequest = await user.countDocuments({isPending:"Pending"});
+    let totalUser = await user.countDocuments();
+    let blockUser = await user.countDocuments({isBlock:"yes"});
+    let activeUser = await user.countDocuments({status: "active"});
+    let deActiveUser = await user.countDocuments({status:"inactive"});
+    let approvedUser = await user.countDocuments({isPending:"Approved"});
+
+    return res.json({
+      status: true,
+      statusCode: 200,
+      message: "Dashboard Count Show Successfully",
+      userRequest,
+      totalUser,
+      blockUser,
+      activeUser,
+      deActiveUser,
+      approvedUser
+    });
+
+  }catch(error){
+    return res.json({
+      statusCode: 400,
+      status: false,
+      message: error.message
+    });
+  }
+};
+
 module.exports.totalActiveUser = async(req,res)=>{
   try{
     const {adminId} = req.body;
