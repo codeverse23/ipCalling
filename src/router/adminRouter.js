@@ -53,6 +53,15 @@ adminRouter.post(
   adminController.totalPendingReq
 );
 
+adminRouter.get(
+  "/blockUserList",
+  varifyToken,
+  verifyRoles(roleList.ADMIN),
+  adminController.blockUserList
+);
+
+
+
 adminRouter.post(
   "/deshboardCount",
   varifyToken,
