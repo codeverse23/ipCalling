@@ -48,6 +48,11 @@ const userSchema = new mongoose.Schema(
       enum: ["Pending", "Approved"],
       default: "Pending", 
     },
+    isBlock: {
+      type: String,
+      enum: ["Yes", "No"],
+      default: "No", 
+    },
     isDeleted:{
       type: Boolean,
       default: false,
@@ -56,8 +61,8 @@ const userSchema = new mongoose.Schema(
       type:[String],
       default:[]
     },
-    lastActive: { type: Date, default: Date.now }, // Track last activity
-    status: { type: String, enum: ['active', 'inactive'], default: 'inactive' }, // Track active/inactive status
+    lastActive: { type: Date, default: Date.now }, 
+    status: { type: String, enum: ['active', 'inactive'], default: 'inactive' }, 
   },
   { timestamps: true }
 );

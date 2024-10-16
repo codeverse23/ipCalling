@@ -1148,12 +1148,12 @@ module.exports.deleteQusAns = async(req,res)=>{
   }
 };
 
-module.exports.deshboardCount = async(req,res)=>{
-  try{
-    const {adminId} = req.body;
-    const findAdmin = await user.findOne({_id:adminId});
+module.exports.deshboardCount = async (req, res) => {
+  try {
+    const adminId = req.query.adminId;
+    const findAdmin = await user.findOne({ _id: adminId });
 
-    if(!findAdmin){
+    if (!findAdmin) {
       return res.json({
         statusCode: 400,
         status: false,
@@ -1161,13 +1161,13 @@ module.exports.deshboardCount = async(req,res)=>{
       });
     }
 
-    // Count the active users
-    let userRequest = await user.countDocuments({isPending:"Pending"});
-    let totalUser = await user.countDocuments();
-    let blockUser = await user.countDocuments({isBlock:"yes"});
-    let activeUser = await user.countDocuments({status: "active"});
-    let deActiveUser = await user.countDocuments({status:"inactive"});
-    let approvedUser = await user.countDocuments({isPending:"Approved"});
+    // Count the active users, excluding admins
+    let userRequest = await user.countDocuments({ isPending: "Pending" });
+    let totalUser = await user.countDocuments({ role: { $ne: "ADMIN" } }); // Exclude admins
+    let blockUser = await user.countDocuments({ isBlock: "yes", role: { $ne: "ADMIN" } }); // Exclude admins
+    let activeUser = await user.countDocuments({ status: "active", role: { $ne: "ADMIN" } }); // Exclude admins
+    let deActiveUser = await user.countDocuments({ status: "inactive", role: { $ne: "ADMIN" } }); // Exclude admins
+    let approvedUser = await user.countDocuments({ isPending: "Approved", role: { $ne: "ADMIN" } }); // Exclude admins
 
     return res.json({
       status: true,
@@ -1181,7 +1181,7 @@ module.exports.deshboardCount = async(req,res)=>{
       approvedUser
     });
 
-  }catch(error){
+  } catch (error) {
     return res.json({
       statusCode: 400,
       status: false,
@@ -1224,11 +1224,16 @@ module.exports.totalActiveUser = async(req,res)=>{
 
 module.exports.totalDeactiveUser = async(req,res)=>{
   try{
-    const {adminId}=req.body;
+    const adminId = req.query.adminId;
     const findAdmin = await user.findOne({_id:adminId})
-    console.log(findAdmin,"findAdmin");
-    let deActiveUser = await user.find({status:"inactive"},{name:1});
-    
+    if(!findAdmin){
+      return res.json({
+        status:false,
+        statusCode:400,
+        message:"Admin Not Found" 
+      })
+    }
+    let deActiveUser = await user.find({status:"inactive"},{name:1});  
     return res.json({
       status:true,
       statusCode:200,
@@ -1247,7 +1252,7 @@ module.exports.totalDeactiveUser = async(req,res)=>{
 
 module.exports.totalPendingReq = async(req,res)=>{
   try{
-    const {adminId}=req.body;
+    const adminId = req.query.adminId;
     const findAdmin = await user.findOne({_id:adminId})
     if(!findAdmin){
       return res.json({
@@ -1286,6 +1291,35 @@ module.exports.totalApprovedReq = async(req,res)=>{
       statusCode:200,
       message:"All Pending Req Show Successfully",
       data:deActiveUser
+    })
+
+  }catch(error){
+    return res.json({
+      statusCode:400,
+      status:true,
+      message:error.message
+    })
+  }
+};
+
+module.exports.blockUserList = async(req,res)=>{
+  try{
+    const adminId = req.query.adminId;
+    const findAdmin = await user.findOne({_id:adminId})
+    if(!findAdmin){
+      return res.json({
+        status:true,
+        statusCode:400,
+        message:"Admin not found"
+      })
+    }
+    let blockUser = await user.find({isBlock:"Yes"},{name:1,username:1,email:1,mobile:1,});
+    
+    return res.json({
+      status:true,
+      statusCode:200,
+      message:"All Block User List Show Successfully",
+      data:blockUser
     })
 
   }catch(error){

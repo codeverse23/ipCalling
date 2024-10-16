@@ -39,21 +39,30 @@ adminRouter.post(
   adminController.totalActiveUser
 );
 
-adminRouter.post(
+adminRouter.get(
   "/totalDeactiveUser",
   varifyToken,
   verifyRoles(roleList.ADMIN),
   adminController.totalDeactiveUser
 );
 
-adminRouter.post(
+adminRouter.get(
   "/totalPendingReq",
   varifyToken,
   verifyRoles(roleList.ADMIN),
   adminController.totalPendingReq
 );
 
-adminRouter.post(
+adminRouter.get(
+  "/blockUserList",
+  varifyToken,
+  verifyRoles(roleList.ADMIN),
+  adminController.blockUserList
+);
+
+
+
+adminRouter.get(
   "/deshboardCount",
   varifyToken,
   verifyRoles(roleList.ADMIN),
