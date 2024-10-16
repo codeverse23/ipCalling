@@ -72,7 +72,7 @@ adminRouter.post("/changPassword", adminController.changPassword);
 adminRouter.post("/SendOtp", adminController.forgotPasswordSendOtp);
 adminRouter.post("/varifyOtp", adminController.varifyOtp);
 
-adminRouter.post("/addSubAdmin", varifyToken, adminController.addSubAdmin);
+adminRouter.post("/addUser", varifyToken, adminController.addUser);
 
 adminRouter.post(
   "/addNotification",
