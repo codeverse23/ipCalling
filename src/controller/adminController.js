@@ -1150,7 +1150,7 @@ module.exports.deleteQusAns = async(req,res)=>{
 
 module.exports.deshboardCount = async (req, res) => {
   try {
-    const { adminId } = req.body;
+    const adminId = req.query.adminId;
     const findAdmin = await user.findOne({ _id: adminId });
 
     if (!findAdmin) {
@@ -1224,11 +1224,16 @@ module.exports.totalActiveUser = async(req,res)=>{
 
 module.exports.totalDeactiveUser = async(req,res)=>{
   try{
-    const {adminId}=req.body;
+    const adminId = req.query.adminId;
     const findAdmin = await user.findOne({_id:adminId})
-    console.log(findAdmin,"findAdmin");
-    let deActiveUser = await user.find({status:"inactive"},{name:1});
-    
+    if(!findAdmin){
+      return res.json({
+        status:false,
+        statusCode:400,
+        message:"Admin Not Found" 
+      })
+    }
+    let deActiveUser = await user.find({status:"inactive"},{name:1});  
     return res.json({
       status:true,
       statusCode:200,
@@ -1247,7 +1252,7 @@ module.exports.totalDeactiveUser = async(req,res)=>{
 
 module.exports.totalPendingReq = async(req,res)=>{
   try{
-    const {adminId}=req.body;
+    const adminId = req.query.adminId;
     const findAdmin = await user.findOne({_id:adminId})
     if(!findAdmin){
       return res.json({
@@ -1301,8 +1306,14 @@ module.exports.blockUserList = async(req,res)=>{
   try{
     const adminId = req.query.adminId;
     const findAdmin = await user.findOne({_id:adminId})
-    console.log(findAdmin,"findAdmin");
-    let blockUser = await user.find({isBlock:"Yes"});
+    if(!findAdmin){
+      return res.json({
+        status:true,
+        statusCode:400,
+        message:"Admin not found"
+      })
+    }
+    let blockUser = await user.find({isBlock:"Yes"},{name:1,username:1,email:1,mobile:1,});
     
     return res.json({
       status:true,
