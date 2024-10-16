@@ -194,6 +194,7 @@ module.exports.login = async (req, res) => {
     }
 
     const role = findAdmin.role;
+    const id =findAdmin._id;
     // Generate JWT token
     const token = jwtToken(email, password, role); // Replace with your actual token generation logic
 
@@ -211,7 +212,8 @@ module.exports.login = async (req, res) => {
       status: true,
       message: "Login Successfully",
       data: token,
-      role:role
+      role:role,
+      id
     });
   } catch (err) {
     return res.json({
