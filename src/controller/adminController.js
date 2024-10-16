@@ -397,7 +397,14 @@ module.exports.addUser = async (req, res) => {
         data: "",
       });
     }
-
+    const findUser = await user.findOne({ email });
+    if (findUser) {
+      return res.json({
+        status: false,
+        statusCode:400,
+        message: "this Email is already is use please use another email",
+      });
+    }
     await user.insertMany({
       name: name,
       username,
@@ -405,13 +412,12 @@ module.exports.addUser = async (req, res) => {
       mobile: mobile,
       password: password,
     });
-
+    console.log("3")
     return res.json({
       status: true,
       statusCode: 200,
       message: "User Add Successfully",
     });
-
   } catch (err) {
     return res.json({
       status: true,
