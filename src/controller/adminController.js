@@ -1344,10 +1344,12 @@ module.exports.blockUserList = async (req, res) => {
 };
 
 /////////////////////////////group////////////////////////////////////
+
 module.exports.createGroup = async (req, res) => {
   try {
-    const { adminId, groupName } = req.body;
+    const { adminId, groupName, memberIds } = req.body;
     const findAdmin = await user.findOne({ _id: adminId });
+    
     if (!findAdmin) {
       return res.json({
         status: true,
@@ -1356,7 +1358,11 @@ module.exports.createGroup = async (req, res) => {
       });
     }
 
-    const newGroup = new group({ groupName, adminId, members: [adminId] });
+    // Ensure adminId is included in memberIds
+    if (!memberIds.includes(adminId)) {
+      memberIds.push(adminId);
+    }
+    const newGroup = new group({ groupName, adminId, members: memberIds });
     let data = await newGroup.save();
 
     return res.json({
@@ -1373,6 +1379,7 @@ module.exports.createGroup = async (req, res) => {
     });
   }
 };
+
 
 module.exports.addMembers = async (req, res) => {
   try {
