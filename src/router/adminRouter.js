@@ -191,4 +191,23 @@ adminRouter.delete(
   varifyToken,
   adminController.deleteQusAns
 );
+
+
+adminRouter.post(
+  "/createGroup",
+  varifyToken,
+  adminController.createGroup
+);
+
+adminRouter.post(
+  "/addMembers",
+  varifyToken,
+  adminController.addMembers
+);
+
+adminRouter.post(
+  "/getGroupInfo",
+  varifyToken,
+  adminController.getGroupInfo
+);
 module.exports = adminRouter;

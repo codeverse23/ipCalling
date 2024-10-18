@@ -7,8 +7,9 @@ const bcrypt = require("bcryptjs");
 const user = require("../model/user");
 const privacyPolicy = require("../model/privacyPolicy");
 const termCondition = require("../model/termCondition.js");
-const qusans =require("../model/askQuestion.js");
+const qusans = require("../model/askQuestion.js");
 const { model } = require("mongoose");
+const group = require("../model/group.js");
 
 ////////////////////////////admin crud/////////////////////////////////////////////
 module.exports.login = async (req, res) => {
@@ -42,9 +43,9 @@ module.exports.login = async (req, res) => {
     // Update the lastActive and mark the user as active
     await user.findOneAndUpdate(
       { email: email },
-      { 
+      {
         lastActive: new Date(), // Set lastActive to current time
-        status: 'active' // Mark user as active
+        status: "active", // Mark user as active
       }
     );
 
@@ -181,7 +182,7 @@ module.exports.blockUnblockUser = async (req, res) => {
   try {
     const { adminId, userId, isBlock } = req.body;
     const findAdmin = await user.findOne({ _id: adminId });
-    
+
     if (!findAdmin) {
       return res.json({
         status: false,
@@ -197,10 +198,10 @@ module.exports.blockUnblockUser = async (req, res) => {
         statusCode: 400,
         message: "User Not Found",
       });
-    };
+    }
 
     await user.updateOne({ _id: userId }, { isBlock: isBlock });
-    
+
     return res.json({
       status: true,
       statusCode: 200,
@@ -331,10 +332,7 @@ module.exports.forgotPasswordSendOtp = async (req, res) => {
     }
     const name = findAdmin.name;
     sendOtp(email, otp, name);
-    await user.findOneAndUpdate(
-      { _id: findAdmin._id },
-      { $set: { otp: otp } }
-    );
+    await user.findOneAndUpdate({ _id: findAdmin._id }, { $set: { otp: otp } });
     return res.json({
       status: true,
       statusCode: 200,
@@ -388,7 +386,7 @@ module.exports.varifyOtp = async (req, res) => {
 
 module.exports.addUser = async (req, res) => {
   try {
-    const { adminId, name,username, email, mobile, password } = req.body;
+    const { adminId, name, username, email, mobile, password } = req.body;
     const findAdmin = await user.findOne({ _id: adminId });
     if (!findAdmin) {
       return res.json({
@@ -401,7 +399,7 @@ module.exports.addUser = async (req, res) => {
     if (findUser) {
       return res.json({
         status: false,
-        statusCode:400,
+        statusCode: 400,
         message: "this Email is already is use please use another email",
       });
     }
@@ -412,7 +410,7 @@ module.exports.addUser = async (req, res) => {
       mobile: mobile,
       password: password,
     });
-    console.log("3")
+    console.log("3");
     return res.json({
       status: true,
       statusCode: 200,
@@ -421,7 +419,7 @@ module.exports.addUser = async (req, res) => {
   } catch (err) {
     return res.json({
       status: true,
-      message: err.message       
+      message: err.message,
     });
   }
 };
@@ -931,27 +929,26 @@ module.exports.deleteSytemInfo = async (req, res) => {
 };
 
 ///////////////////////////////privacyPolicy//////////////
-module.exports.addprivecyPolicy =async(req,res)=>{
-  try{
-    const {adminId,policyMessage}=req.body;
-    const findAdmin =await user.findOne({_id:adminId});
-    if(!findAdmin){
+module.exports.addprivecyPolicy = async (req, res) => {
+  try {
+    const { adminId, policyMessage } = req.body;
+    const findAdmin = await user.findOne({ _id: adminId });
+    if (!findAdmin) {
       return res.json({
-        status:false,
-        statusCode:400,
-        message:"Admin Not Found"
-      })
-    };
+        status: false,
+        statusCode: 400,
+        message: "Admin Not Found",
+      });
+    }
 
-    const data= await privacyPolicy.create({policyMessage});
+    const data = await privacyPolicy.create({ policyMessage });
     return res.json({
       status: true,
       statusCode: 200,
-      message:"Privacy Policy Add successfully" ,
-      data:data
-    })
-
-  }catch (err) {
+      message: "Privacy Policy Add successfully",
+      data: data,
+    });
+  } catch (err) {
     return res.json({
       status: false,
       statusCode: 400,
@@ -960,28 +957,30 @@ module.exports.addprivecyPolicy =async(req,res)=>{
   }
 };
 
-module.exports.updatePrivecyPolicy =async(req,res)=>{
-  try{
-    const {adminId,policyId,policyMessage}=req.body;
+module.exports.updatePrivecyPolicy = async (req, res) => {
+  try {
+    const { adminId, policyId, policyMessage } = req.body;
 
-    const findAdmin =await user.findOne({_id:adminId});
-    if(!findAdmin){
+    const findAdmin = await user.findOne({ _id: adminId });
+    if (!findAdmin) {
       return res.json({
-        status:false,
-        statusCode:400,
-        message:"Admin Not Found"
-      })
-    };
+        status: false,
+        statusCode: 400,
+        message: "Admin Not Found",
+      });
+    }
 
-    const data= await privacyPolicy.updateOne({_id:policyId},{$set:{policyMessage}});
+    const data = await privacyPolicy.updateOne(
+      { _id: policyId },
+      { $set: { policyMessage } }
+    );
     return res.json({
       status: true,
       statusCode: 200,
-      message:"Privacy Policy Add successfully" ,
-      data:data
-    })
-
-  }catch (err) {
+      message: "Privacy Policy Add successfully",
+      data: data,
+    });
+  } catch (err) {
     return res.json({
       status: false,
       statusCode: 400,
@@ -990,27 +989,26 @@ module.exports.updatePrivecyPolicy =async(req,res)=>{
   }
 };
 
-module.exports.addtermCondition =async(req,res)=>{
-  try{
-    const {adminId,termConditionMessage}=req.body;
-    const findAdmin =await user.findOne({_id:adminId});
-    if(!findAdmin){
+module.exports.addtermCondition = async (req, res) => {
+  try {
+    const { adminId, termConditionMessage } = req.body;
+    const findAdmin = await user.findOne({ _id: adminId });
+    if (!findAdmin) {
       return res.json({
-        status:false,
-        statusCode:400,
-        message:"Admin Not Found"
-      })
-    };
+        status: false,
+        statusCode: 400,
+        message: "Admin Not Found",
+      });
+    }
 
-    const data= await termCondition.create({termConditionMessage});
+    const data = await termCondition.create({ termConditionMessage });
     return res.json({
       status: true,
       statusCode: 200,
-      message:"TermConditionMessage Add successfully" ,
-      data:data
-    })
-
-  }catch (err) {
+      message: "TermConditionMessage Add successfully",
+      data: data,
+    });
+  } catch (err) {
     return res.json({
       status: false,
       statusCode: 400,
@@ -1019,28 +1017,30 @@ module.exports.addtermCondition =async(req,res)=>{
   }
 };
 
-module.exports.updateTermCondition =async(req,res)=>{
-  try{
-    const {adminId,termConditionId,termConditionMessage}=req.body;
+module.exports.updateTermCondition = async (req, res) => {
+  try {
+    const { adminId, termConditionId, termConditionMessage } = req.body;
 
-    const findAdmin =await user.findOne({_id:adminId});
-    if(!findAdmin){
+    const findAdmin = await user.findOne({ _id: adminId });
+    if (!findAdmin) {
       return res.json({
-        status:false,
-        statusCode:400,
-        message:"Admin Not Found"
-      })
-    };
+        status: false,
+        statusCode: 400,
+        message: "Admin Not Found",
+      });
+    }
 
-    const data= await termCondition.updateOne({_id:termConditionId},{$set:{termConditionMessage}});
+    const data = await termCondition.updateOne(
+      { _id: termConditionId },
+      { $set: { termConditionMessage } }
+    );
     return res.json({
       status: true,
       statusCode: 200,
-      message:"Privacy Policy Add successfully" ,
-      data:data
-    })
-
-  }catch (err) {
+      message: "Privacy Policy Add successfully",
+      data: data,
+    });
+  } catch (err) {
     return res.json({
       status: false,
       statusCode: 400,
@@ -1049,32 +1049,31 @@ module.exports.updateTermCondition =async(req,res)=>{
   }
 };
 
-module.exports.addQusAns=async(req,res)=>{
-  try{
-    const {adminId,qus,ans}=req.body;
-    const findAdmin =await user.findOne({_id:adminId});
-    if(!findAdmin){
+module.exports.addQusAns = async (req, res) => {
+  try {
+    const { adminId, qus, ans } = req.body;
+    const findAdmin = await user.findOne({ _id: adminId });
+    if (!findAdmin) {
       return res.json({
-        status:false,
-        statusCode:400,
-        message:"Admin Not Found"
-      })
-    };
+        status: false,
+        statusCode: 400,
+        message: "Admin Not Found",
+      });
+    }
 
     const data = await qusans.create({
-    qus,
-    ans
-    })
+      qus,
+      ans,
+    });
 
-    console.log(data,"data")
+    console.log(data, "data");
     return res.json({
       status: true,
       statusCode: 200,
-      message:"TermConditionMessage Add successfully" ,
-      data:data
-    })
-
-  }catch (err) {
+      message: "TermConditionMessage Add successfully",
+      data: data,
+    });
+  } catch (err) {
     return res.json({
       status: false,
       statusCode: 400,
@@ -1083,74 +1082,72 @@ module.exports.addQusAns=async(req,res)=>{
   }
 };
 
-module.exports.updateQusAns=async(req,res)=>{
-  try{
-    const {adminId,qusAnsId,qus,ans}=req.body;
-    const findAdmin =await user.findOne({_id:adminId});
-    if(!findAdmin){
+module.exports.updateQusAns = async (req, res) => {
+  try {
+    const { adminId, qusAnsId, qus, ans } = req.body;
+    const findAdmin = await user.findOne({ _id: adminId });
+    if (!findAdmin) {
       return res.json({
-        status:false,
-        statusCode:400,
-        message:"Admin Not Found"
-      })
-    };
-
-    const findqusAns = await qusans.findOne({_id:qusAnsId})
-    if(!findqusAns){
-      return res.json({
-        status:false,
-        statusCode:400,
-        message:"Admin Not Found"
-      })
-    } 
-
-    const qusAnsObj={}
-    if(qus) qusAnsObj.qus;
-    if(ans) qusAnsObj.ans;
-  
-    console.log(qusAnsObj,"qusAnsObj")
-    const data = await qusans.updateOne({id:adminId},{$set:qusAnsObj});
-    return res.json({
-      status: true,
-      statusCode: 200,
-      message:"qusAns Update successfully" ,
-      data:data
-    })
-
-  }catch (err) {
-    return res.json({
-      status: false,
-      statusCode: 400,
-      message: err.message,
-    });
-  }
-};
-
-module.exports.deleteQusAns = async(req,res)=>{
-  try{
-    const{adminId,qusAnsId}=req.body;
-    const findAdmin =user.findOne({_id:adminId});
-    if(!findAdmin){
-      return res.json({
-        status:false,
-        statusCode:400,
-        message:"Admin not found"
-      })
+        status: false,
+        statusCode: 400,
+        message: "Admin Not Found",
+      });
     }
-    const deleteQus=await qusans.deleteOne({_id:qusAnsId});
-    console.log(deleteQus,"deleteQus")
-    return res.json({
-      statusCode:400,
-      status:true,
-      message:"qusAns Delete successfully"
-    })
 
-  }catch(err){
+    const findqusAns = await qusans.findOne({ _id: qusAnsId });
+    if (!findqusAns) {
+      return res.json({
+        status: false,
+        statusCode: 400,
+        message: "Admin Not Found",
+      });
+    }
+
+    const qusAnsObj = {};
+    if (qus) qusAnsObj.qus;
+    if (ans) qusAnsObj.ans;
+
+    console.log(qusAnsObj, "qusAnsObj");
+    const data = await qusans.updateOne({ id: adminId }, { $set: qusAnsObj });
     return res.json({
-      status:false,
-      statusCode:400,
-      message:err.message
-    })
+      status: true,
+      statusCode: 200,
+      message: "qusAns Update successfully",
+      data: data,
+    });
+  } catch (err) {
+    return res.json({
+      status: false,
+      statusCode: 400,
+      message: err.message,
+    });
+  }
+};
+
+module.exports.deleteQusAns = async (req, res) => {
+  try {
+    const { adminId, qusAnsId } = req.body;
+    const findAdmin = user.findOne({ _id: adminId });
+    if (!findAdmin) {
+      return res.json({
+        status: false,
+        statusCode: 400,
+        message: "Admin not found",
+      });
+    }
+    const deleteQus = await qusans.deleteOne({ _id: qusAnsId });
+    console.log(deleteQus, "deleteQus");
+    return res.json({
+      statusCode: 400,
+      status: true,
+      message: "qusAns Delete successfully",
+    });
+  } catch (err) {
+    return res.json({
+      status: false,
+      statusCode: 400,
+      message: err.message,
+    });
   }
 };
 
@@ -1163,17 +1160,29 @@ module.exports.deshboardCount = async (req, res) => {
       return res.json({
         statusCode: 400,
         status: false,
-        message: "Admin Not Found"
+        message: "Admin Not Found",
       });
     }
 
     // Count the active users, excluding admins
     let userRequest = await user.countDocuments({ isPending: "Pending" });
     let totalUser = await user.countDocuments({ role: { $ne: "ADMIN" } }); // Exclude admins
-    let blockUser = await user.countDocuments({ isBlock: "yes", role: { $ne: "ADMIN" } }); // Exclude admins
-    let activeUser = await user.countDocuments({ status: "active", role: { $ne: "ADMIN" } }); // Exclude admins
-    let deActiveUser = await user.countDocuments({ status: "inactive", role: { $ne: "ADMIN" } }); // Exclude admins
-    let approvedUser = await user.countDocuments({ isPending: "Approved", role: { $ne: "ADMIN" } }); // Exclude admins
+    let blockUser = await user.countDocuments({
+      isBlock: "yes",
+      role: { $ne: "ADMIN" },
+    }); // Exclude admins
+    let activeUser = await user.countDocuments({
+      status: "active",
+      role: { $ne: "ADMIN" },
+    }); // Exclude admins
+    let deActiveUser = await user.countDocuments({
+      status: "inactive",
+      role: { $ne: "ADMIN" },
+    }); // Exclude admins
+    let approvedUser = await user.countDocuments({
+      isPending: "Approved",
+      role: { $ne: "ADMIN" },
+    }); // Exclude admins
 
     return res.json({
       status: true,
@@ -1184,155 +1193,264 @@ module.exports.deshboardCount = async (req, res) => {
       blockUser,
       activeUser,
       deActiveUser,
-      approvedUser
+      approvedUser,
     });
-
   } catch (error) {
     return res.json({
       statusCode: 400,
       status: false,
-      message: error.message
+      message: error.message,
     });
   }
 };
 
-module.exports.totalActiveUser = async(req,res)=>{
-  try{
-    const {adminId} = req.body;
-    const findAdmin = await user.findOne({_id:adminId});
+module.exports.totalActiveUser = async (req, res) => {
+  try {
+    const { adminId } = req.body;
+    const findAdmin = await user.findOne({ _id: adminId });
 
-    if(!findAdmin){
+    if (!findAdmin) {
       return res.json({
         statusCode: 400,
         status: false,
-        message: "Admin Not Found"
+        message: "Admin Not Found",
       });
     }
 
     // Count the active users
-    let activeUserCount = await user.find({status: "active"},{name:1});
+    let activeUserCount = await user.find({ status: "active" }, { name: 1 });
 
     return res.json({
       status: true,
       statusCode: 200,
       message: "Active User Count Retrieved Successfully",
-      totalActiveUsers: activeUserCount
+      totalActiveUsers: activeUserCount,
     });
-
-  }catch(error){
+  } catch (error) {
     return res.json({
       statusCode: 400,
       status: false,
-      message: error.message
+      message: error.message,
     });
   }
 };
 
-module.exports.totalDeactiveUser = async(req,res)=>{
-  try{
+module.exports.totalDeactiveUser = async (req, res) => {
+  try {
     const adminId = req.query.adminId;
-    const findAdmin = await user.findOne({_id:adminId})
-    if(!findAdmin){
+    const findAdmin = await user.findOne({ _id: adminId });
+    if (!findAdmin) {
       return res.json({
-        status:false,
-        statusCode:400,
-        message:"Admin Not Found" 
-      })
+        status: false,
+        statusCode: 400,
+        message: "Admin Not Found",
+      });
     }
-    let deActiveUser = await user.find({status:"inactive"},{name:1});  
+    let deActiveUser = await user.find({ status: "inactive" }, { name: 1 });
     return res.json({
-      status:true,
-      statusCode:200,
-      message:"All Deactive User Shown Successfully",
-      data:deActiveUser
-    })
-
-  }catch(error){
+      status: true,
+      statusCode: 200,
+      message: "All Deactive User Shown Successfully",
+      data: deActiveUser,
+    });
+  } catch (error) {
     return res.json({
-      statusCode:400,
-      status:true,
-      message:error.message
-    })
+      statusCode: 400,
+      status: true,
+      message: error.message,
+    });
   }
 };
 
-module.exports.totalPendingReq = async(req,res)=>{
-  try{
+module.exports.totalPendingReq = async (req, res) => {
+  try {
     const adminId = req.query.adminId;
-    const findAdmin = await user.findOne({_id:adminId})
-    if(!findAdmin){
+    const findAdmin = await user.findOne({ _id: adminId });
+    if (!findAdmin) {
       return res.json({
-        status:false,
-        statuscode:400,
-        message:"Admin Not Found"        
-      })
+        status: false,
+        statuscode: 400,
+        message: "Admin Not Found",
+      });
     }
-    let deActiveUser = await user.find({isPending:"Pending"},{});
-    
-    return res.json({
-      status:true,
-      statusCode:200,
-      message:"All Pending Request Show Successfully",
-      data:deActiveUser
-    })
+    let deActiveUser = await user.find({ isPending: "Pending" }, {});
 
-  }catch(error){
     return res.json({
-      statusCode:400,
-      status:true,
-      message:error.message
-    })
+      status: true,
+      statusCode: 200,
+      message: "All Pending Request Show Successfully",
+      data: deActiveUser,
+    });
+  } catch (error) {
+    return res.json({
+      statusCode: 400,
+      status: true,
+      message: error.message,
+    });
   }
 };
 
-module.exports.totalApprovedReq = async(req,res)=>{
-  try{
-    const {adminId}=req.body;
-    const findAdmin = await user.findOne({_id:adminId})
-    console.log(findAdmin,"findAdmin");
-    let deActiveUser = await user.find({isPending:"Approved"});
-    
-    return res.json({
-      status:true,
-      statusCode:200,
-      message:"All Pending Req Show Successfully",
-      data:deActiveUser
-    })
+module.exports.totalApprovedReq = async (req, res) => {
+  try {
+    const { adminId } = req.body;
+    const findAdmin = await user.findOne({ _id: adminId });
+    console.log(findAdmin, "findAdmin");
+    let deActiveUser = await user.find({ isPending: "Approved" });
 
-  }catch(error){
     return res.json({
-      statusCode:400,
-      status:true,
-      message:error.message
-    })
+      status: true,
+      statusCode: 200,
+      message: "All Pending Req Show Successfully",
+      data: deActiveUser,
+    });
+  } catch (error) {
+    return res.json({
+      statusCode: 400,
+      status: true,
+      message: error.message,
+    });
   }
 };
 
-module.exports.blockUserList = async(req,res)=>{
-  try{
+module.exports.blockUserList = async (req, res) => {
+  try {
     const adminId = req.query.adminId;
-    const findAdmin = await user.findOne({_id:adminId})
-    if(!findAdmin){
+    const findAdmin = await user.findOne({ _id: adminId });
+    if (!findAdmin) {
       return res.json({
-        status:true,
-        statusCode:400,
-        message:"Admin not found"
-      })
+        status: true,
+        statusCode: 400,
+        message: "Admin not found",
+      });
     }
-    let blockUser = await user.find({isBlock:"Yes"},{name:1,username:1,email:1,mobile:1,});
-    
-    return res.json({
-      status:true,
-      statusCode:200,
-      message:"All Block User List Show Successfully",
-      data:blockUser
-    })
+    let blockUser = await user.find(
+      { isBlock: "Yes" },
+      { name: 1, username: 1, email: 1, mobile: 1 }
+    );
 
-  }catch(error){
     return res.json({
-      statusCode:400,
-      status:true,
-      message:error.message
-    })
+      status: true,
+      statusCode: 200,
+      message: "All Block User List Show Successfully",
+      data: blockUser,
+    });
+  } catch (error) {
+    return res.json({
+      statusCode: 400,
+      status: true,
+      message: error.message,
+    });
+  }
+};
+
+/////////////////////////////group////////////////////////////////////
+module.exports.createGroup = async (req, res) => {
+  try {
+    const { adminId, groupName } = req.body;
+    const findAdmin = await user.findOne({ _id: adminId });
+    if (!findAdmin) {
+      return res.json({
+        status: true,
+        statusCode: 400,
+        message: "Admin not found",
+      });
+    }
+
+    const newGroup = new group({ groupName, adminId, members: [adminId] });
+    let data = await newGroup.save();
+
+    return res.json({
+      status: true,
+      statusCode: 200,
+      message: "New Group Save Successfully",
+      data: data,
+    });
+  } catch (error) {
+    return res.json({
+      statusCode: 400,
+      status: true,
+      message: error.message,
+    });
+  }
+};
+
+module.exports.addMembers = async (req, res) => {
+  try {
+    const { adminId, userId, groupId } = req.body;
+    const findAdmin = await user.findOne({ _id: adminId });
+    if (!findAdmin) {
+      return res.json({
+        status: false,
+        statusCode: 400,
+        message: "Admin not found",
+      });
+    }
+
+    const findGroup = await group.findOne({ _id: groupId });
+    if (!findGroup) {
+      return res.json({
+        status: false,
+        statusCode: 400,
+        message: "Group Not Fount",
+      });
+    }
+
+    findGroup.members.push(userId);
+    const addMembersInGroup = await findGroup.save();
+    return res.json({
+      status: true,
+      statusCode: 200,
+      message: "New  Group Member Add Successfully",
+      data: addMembersInGroup,
+    });
+  } catch (error) {
+    return res.json({
+      statusCode: 400,
+      status: true,
+      message: error.message,
+    });
+  }
+};
+
+module.exports.getGroupInfo = async (req, res) => {
+  try {
+    const { groupId } = req.query;
+    const findGroup = await group.findOne({ _id: groupId });
+    if (!findGroup) {
+      return res.json({
+        status: false,
+        statusCode: 400,
+        message: "Group Not Found",
+      });
+    }
+
+    // Find members by their IDs
+    const members = await user.find({
+      _id: { $in: findGroup.members },
+    });
+  
+    const membersDetails = members.map((member) => ({
+      id: member._id,
+      name: member.name,
+      email: member.email,
+      mobile: member.mobile,
+    }));
+
+    return res.json({
+      status: true,
+      statusCode: 200,
+      message: "Group Information Retrieved Successfully",
+      data: {
+        groupId: findGroup._id,
+        groupName: findGroup.groupName,
+        members: membersDetails,
+      },
+    });
+  } catch (error) {
+    return res.json({
+      statusCode: 400,
+      status: true,
+      message: error.message,
+    });
   }
 };
