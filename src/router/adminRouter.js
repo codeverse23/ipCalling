@@ -216,4 +216,10 @@ adminRouter.delete(
   varifyToken,
   adminController.deleteGroup
 );
+
+adminRouter.delete(
+  "/deleteUserGroup",
+  varifyToken,
+  adminController.deleteUserGroup
+);
 module.exports = adminRouter;
