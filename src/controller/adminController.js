@@ -1206,7 +1206,7 @@ module.exports.deshboardCount = async (req, res) => {
 
 module.exports.totalActiveUser = async (req, res) => {
   try {
-    const { adminId } = req.body;
+    const adminId = req.query.adminId;
     const findAdmin = await user.findOne({ _id: adminId });
     console.log(findAdmin,"gggggggggg",adminId)
     if (!findAdmin) {
