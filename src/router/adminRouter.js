@@ -32,7 +32,7 @@ adminRouter.get(
   adminController.adminProfile
 );
 
-adminRouter.post(
+adminRouter.get(
   "/totalActiveUser",
   varifyToken,
   verifyRoles(roleList.ADMIN),

@@ -1218,8 +1218,7 @@ module.exports.totalActiveUser = async (req, res) => {
     }
 
     // Count the active users
-    let activeUserCount = await user.find({ status: "active" }, { name: 1 },{email:1});
-
+    let activeUserCount = await user.find({ status: "active"},{name:1,email:1});
     return res.json({
       status: true,
       statusCode: 200,
