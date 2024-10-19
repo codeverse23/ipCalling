@@ -210,4 +210,10 @@ adminRouter.post(
   varifyToken,
   adminController.getGroupInfo
 );
+
+adminRouter.delete(
+  "/deleteGroup",
+  varifyToken,
+  adminController.deleteGroup
+);
 module.exports = adminRouter;

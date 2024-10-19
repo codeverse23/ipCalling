@@ -1349,7 +1349,7 @@ module.exports.createGroup = async (req, res) => {
   try {
     const { adminId, groupName, memberIds } = req.body;
     const findAdmin = await user.findOne({ _id: adminId });
-    
+
     if (!findAdmin) {
       return res.json({
         status: true,
@@ -1379,7 +1379,6 @@ module.exports.createGroup = async (req, res) => {
     });
   }
 };
-
 
 module.exports.addMembers = async (req, res) => {
   try {
@@ -1435,7 +1434,7 @@ module.exports.getGroupInfo = async (req, res) => {
     const members = await user.find({
       _id: { $in: findGroup.members },
     });
-  
+
     const membersDetails = members.map((member) => ({
       id: member._id,
       name: member.name,
@@ -1452,6 +1451,42 @@ module.exports.getGroupInfo = async (req, res) => {
         groupName: findGroup.groupName,
         members: membersDetails,
       },
+    });
+  } catch (error) {
+    return res.json({
+      statusCode: 400,
+      status: true,
+      message: error.message,
+    });
+  }
+};
+
+module.exports.deleteGroup = async (req, res) => {
+  try {
+    const { adminId,groupId } = req.body;
+    const findAdmin = await user.findOne({ _id: adminId });
+    if (!findAdmin) {
+      return res.json({
+        status: false,
+        statusCode: 400,
+        message: "Group Not Found",
+      });
+    }
+    const findGroup = await group.findOne({ _id: groupId });
+    if (!findGroup) {
+      return res.json({
+        status: false,
+        statusCode: 400,
+        message: "Group Not Found",
+      });
+    }
+
+    let deleteInfo = await group.deleteOne({ _id: groupId });
+    return res.json({
+      status: true,
+      statusCode: 200,
+      message: "Group Delete Successfully",
+      data: deleteInfo,
     });
   } catch (error) {
     return res.json({
