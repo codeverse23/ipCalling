@@ -210,4 +210,12 @@ adminRouter.post(
   varifyToken,
   adminController.getGroupInfo
 );
+
+
+adminRouter.put(
+  "/userAcceptReject",
+  varifyToken,
+  adminController.userAcceptReject
+);
+
 module.exports = adminRouter;

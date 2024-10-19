@@ -1218,7 +1218,7 @@ module.exports.totalActiveUser = async (req, res) => {
     }
 
     // Count the active users
-    let activeUserCount = await user.find({ status: "active" }, { name: 1 });
+    let activeUserCount = await user.find({ status: "active" }, { name: 1 },{email:1});
 
     return res.json({
       status: true,
@@ -1349,7 +1349,7 @@ module.exports.createGroup = async (req, res) => {
   try {
     const { adminId, groupName, memberIds } = req.body;
     const findAdmin = await user.findOne({ _id: adminId });
-    
+
     if (!findAdmin) {
       return res.json({
         status: true,
@@ -1379,7 +1379,6 @@ module.exports.createGroup = async (req, res) => {
     });
   }
 };
-
 
 module.exports.addMembers = async (req, res) => {
   try {
@@ -1435,7 +1434,7 @@ module.exports.getGroupInfo = async (req, res) => {
     const members = await user.find({
       _id: { $in: findGroup.members },
     });
-  
+
     const membersDetails = members.map((member) => ({
       id: member._id,
       name: member.name,
@@ -1458,6 +1457,53 @@ module.exports.getGroupInfo = async (req, res) => {
       statusCode: 400,
       status: true,
       message: error.message,
+    });
+  }
+};
+
+module.exports.userAcceptReject = async (req, res) => {
+  try {
+    const { adminId, userId, isPending } = req.body;
+
+    const findAdmin = await user.findOne({
+      _id: adminId,
+    });
+
+    if (!findAdmin) {
+      return res.json({
+        status: true,
+        statusCode: false,
+        message: "Admin Not found",
+      });
+    };
+
+    const findUser = await user.findOne({
+      _id: userId,
+    });
+
+    if (!findUser) {
+      return res.json({
+        status: true,
+        statusCode: false,
+        message: "User Not found",
+      });
+    };
+
+    const updateInfo = await user.updateOne(
+      { _id: userId },
+      { $set: { isPending } }
+    );
+
+    return res.json({
+      status: true,
+      statusCode: 200,
+      message: updateInfo,
+    });
+  } catch (err) {
+    return res.json({
+      status: false,
+      statusCode: 400,
+      message: err.message,
     });
   }
 };
