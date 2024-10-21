@@ -1,6 +1,8 @@
 const express = require("express");
 require('dotenv').config("./.env");
 const app = express();
+const dotenv =require("dotenv")
+dotenv.config()
 const port = 9000;
 const router = require("./src/router/index");
 require("./src/config/connection");
