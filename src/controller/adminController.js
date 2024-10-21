@@ -1207,9 +1207,9 @@ module.exports.deshboardCount = async (req, res) => {
 
 module.exports.totalActiveUser = async (req, res) => {
   try {
-    const { adminId } = req.body;
+    const adminId = req.query.adminId;
     const findAdmin = await user.findOne({ _id: adminId });
-
+    console.log(findAdmin,"gggggggggg",adminId)
     if (!findAdmin) {
       return res.json({
         statusCode: 400,
@@ -1219,8 +1219,7 @@ module.exports.totalActiveUser = async (req, res) => {
     }
 
     // Count the active users
-    let activeUserCount = await user.find({ status: "active" }, { name: 1 });
-
+    let activeUserCount = await user.find({ status: "active"},{name:1,email:1});
     return res.json({
       status: true,
       statusCode: 200,
