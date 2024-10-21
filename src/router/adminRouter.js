@@ -211,11 +211,15 @@ adminRouter.post(
   adminController.getGroupInfo
 );
 
-
-adminRouter.put(
-  "/userAcceptReject",
+adminRouter.delete(
+  "/deleteGroup",
   varifyToken,
-  adminController.userAcceptReject
+  adminController.deleteGroup
 );
 
+adminRouter.delete(
+  "/deleteUserGroup",
+  varifyToken,
+  adminController.deleteUserGroup
+);
 module.exports = adminRouter;

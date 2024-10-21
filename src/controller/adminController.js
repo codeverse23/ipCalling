@@ -928,6 +928,7 @@ module.exports.deleteSytemInfo = async (req, res) => {
   }
 };
 
+
 ///////////////////////////////privacyPolicy//////////////
 module.exports.addprivecyPolicy = async (req, res) => {
   try {
@@ -1460,49 +1461,81 @@ module.exports.getGroupInfo = async (req, res) => {
   }
 };
 
-module.exports.userAcceptReject = async (req, res) => {
+module.exports.deleteGroup = async (req, res) => {
   try {
-    const { adminId, userId, isPending } = req.body;
-
-    const findAdmin = await user.findOne({
-      _id: adminId,
-    });
-
+    const { adminId,groupId } = req.body;
+    const findAdmin = await user.findOne({ _id: adminId });
     if (!findAdmin) {
       return res.json({
-        status: true,
-        statusCode: false,
-        message: "Admin Not found",
+        status: false,
+        statusCode: 400,
+        message: "Group Not Found",
       });
-    };
-
-    const findUser = await user.findOne({
-      _id: userId,
-    });
-
-    if (!findUser) {
+    }
+    const findGroup = await group.findOne({ _id: groupId });
+    if (!findGroup) {
       return res.json({
-        status: true,
-        statusCode: false,
-        message: "User Not found",
+        status: false,
+        statusCode: 400,
+        message: "Group Not Found",
       });
-    };
+    }
 
-    const updateInfo = await user.updateOne(
-      { _id: userId },
-      { $set: { isPending } }
-    );
+    let deleteInfo = await group.deleteOne({ _id: groupId });
+    return res.json({
+      status: true,
+      statusCode: 200,
+      message: "Group Delete Successfully",
+      data: deleteInfo,
+    });
+  } catch (error) {
+    return res.json({
+      statusCode: 400,
+      status: true,
+      message: error.message,
+    });
+  }
+};
+
+module.exports.deleteUserGroup = async (req, res) => {
+  try {
+    const { adminId, membserIds } = req.body;
+
+    // Find the group by adminId
+    const foundGroup = await group.findOne({ adminId: adminId });
+    if (!foundGroup) {
+      return res.json({
+        status: false,
+        statusCode: 400,
+        message: "Group Not Found",
+      });
+    }
+
+    // Check if the member IDs are present in the group's members
+    const invalidIds = membserIds.filter(id => !foundGroup.members.includes(id));
+    if (invalidIds.length > 0) {
+      return res.json({
+        status: false,
+        statusCode: 400,
+        message: "Some IDs Not In The Group",
+      });
+    }
+
+    // Remove specified members from the group
+    foundGroup.members = foundGroup.members.filter(member => !membserIds.includes(member));
+    await foundGroup.save();
 
     return res.json({
       status: true,
       statusCode: 200,
-      message: updateInfo,
+      message: "Members Deleted Successfully",
+      data: foundGroup,
     });
-  } catch (err) {
+  } catch (error) {
     return res.json({
+      statusCode: 500,
       status: false,
-      statusCode: 400,
-      message: err.message,
+      message: error.message,
     });
   }
 };
