@@ -3,12 +3,16 @@ const multerS3 = require('multer-s3');
 const { S3Client } = require('@aws-sdk/client-s3');
 
 const s3 = new S3Client({
-    region: "eu-north-1",
+    region: "eu-north-1", // Verify this matches your S3 bucket's region
     credentials: {
-        accessKeyId: "AKIA4MTWIR3R3PZD2RMF",
-        secretAccessKey: "nMUOMJrfARPtNbQAPLOToQUJ6uDajYDHh6SyEgmw"
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
     }
 });
+
+
+console.log("Access Key:", process.env.AWS_ACCESS_KEY_ID);
+console.log("Secret Key:", process.env.AWS_SECRET_ACCESS_KEY);
 
 const getMulterStorage = (storagePath) => {
     const s3Storage = multerS3({
@@ -19,6 +23,7 @@ const getMulterStorage = (storagePath) => {
         },
         key: (req, file, cb) => {
             const fileName = `${storagePath}/${file.fieldname}_${Date.now()}_${file.originalname}`;
+            console.log("fileNamefileName::",fileName)
             cb(null, fileName);
         },
     });
@@ -30,4 +35,4 @@ const getMulterStorage = (storagePath) => {
     return multerInstanceForUpload;
 };
 
-module.exports = getMulterStorage; 
+module.exports = getMulterStorage;
