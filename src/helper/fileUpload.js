@@ -1,14 +1,15 @@
-const  multer= require('multer');
-const multerS3 = require ('multer-s3');
-const { S3Client } =require('@aws-sdk/client-s3');
+const multer = require('multer');
+const multerS3 = require('multer-s3');
+const { S3Client } = require('@aws-sdk/client-s3');
 
 const s3 = new S3Client({
     region: "eu-north-1",
     credentials: {
         accessKeyId: "AKIA4MTWIR3R3PZD2RMF",
-        secretAccessKey:"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"
+        secretAccessKey: "nMUOMJrfARPtNbQAPLOToQUJ6uDajYDHh6SyEgmw"
     }
 });
+
 const getMulterStorage = (storagePath) => {
     const s3Storage = multerS3({
         s3: s3,
@@ -29,4 +30,4 @@ const getMulterStorage = (storagePath) => {
     return multerInstanceForUpload;
 };
 
-module.exports = getMulterStorage;
+module.exports = getMulterStorage; 
