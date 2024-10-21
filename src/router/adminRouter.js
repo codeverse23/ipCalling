@@ -6,17 +6,8 @@ const multer = require("multer");
 const path = require("path");
 const verifyRoles = require("../../middlewares/verifyRoles");
 const roleList = require("../../src/consts/autho");
-
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, "../../upload")); // 'uploads/' folder mein files store hongi
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.fieldname + "-" + Date.now()); // File ka naam unique banane ke liye
-  },
-});
-const upload = multer({ storage: storage });
-
+const getMulterStorage = require("../helper/fileUpload");
+const uploadSingle = getMulterStorage("groupImage").single("groupImage"); 
 adminRouter.post("/login", adminController.login);
 adminRouter.get("/userList", varifyToken, adminController.userList);
 adminRouter.delete("/deleteUser", varifyToken, adminController.deleteUser);
@@ -126,7 +117,7 @@ adminRouter.delete(
 adminRouter.put(
   "/updateAdminProfile",
   varifyToken,
-  upload.single("file"),
+  uploadSingle, // Corrected from upload.single("file") to uploadSingle
   adminController.updateAdminProfile
 );
 
@@ -196,6 +187,7 @@ adminRouter.delete(
 adminRouter.post(
   "/createGroup",
   varifyToken,
+  uploadSingle,
   adminController.createGroup
 );
 

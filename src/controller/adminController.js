@@ -1349,6 +1349,7 @@ module.exports.createGroup = async (req, res) => {
   try {
     const { adminId, groupName, memberIds } = req.body;
     const findAdmin = await user.findOne({ _id: adminId });
+    const groupImage = req.file;
 
     if (!findAdmin) {
       return res.json({
@@ -1359,10 +1360,21 @@ module.exports.createGroup = async (req, res) => {
     }
 
     // Ensure adminId is included in memberIds
-    if (!memberIds.includes(adminId)) {
-      memberIds.push(adminId);
+    const membersArray = Array.isArray(memberIds) ? memberIds : [];
+    if (!membersArray.includes(adminId)) {
+      membersArray.push(adminId);
     }
-    const newGroup = new group({ groupName, adminId, members: memberIds });
+
+    // Use the location of the uploaded file (the URL)
+    const groupImageUrl = groupImage ? groupImage.location : null;
+
+    const newGroup = new group({
+      groupName,
+      groupImage: groupImageUrl, // Store the URL here
+      adminId,
+      members: membersArray,
+    });
+
     let data = await newGroup.save();
 
     return res.json({
@@ -1379,6 +1391,7 @@ module.exports.createGroup = async (req, res) => {
     });
   }
 };
+
 
 module.exports.addMembers = async (req, res) => {
   try {
