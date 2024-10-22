@@ -239,7 +239,6 @@ module.exports.blockUnblockUser = async (req, res) => {
   }
 };
 
-
 module.exports.addNotification = async (req, res) => {
   try {
     const { adminId, title, message } = req.body;
@@ -1445,7 +1444,7 @@ module.exports.createGroup = async (req, res) => {
     return res.json({
       status: true,
       statusCode: 200,
-      message: "New Group Save Successfully",
+      message: "New Group Created Successfully",
       data: data,
     });
   } catch (error) {
