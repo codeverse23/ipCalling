@@ -45,7 +45,7 @@ const userSchema = new mongoose.Schema(
     },
     isPending: {
       type: String,
-      enum: ["Pending", "Approved"],
+      enum: ["Pending", "Approved","Reject"],
       default: "Pending", 
     },
     isBlock: {

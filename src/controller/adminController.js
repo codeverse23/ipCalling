@@ -928,6 +928,47 @@ module.exports.deleteSytemInfo = async (req, res) => {
   }
 };
 
+module.exports.userAcceptReject = async (req, res) => {
+  try {
+    const { adminId, userId,isPending } = req.body;
+
+    const findAdmin = await user.findOne({
+      _id: adminId,
+    });
+    if (!findAdmin) {
+      return res.json({
+        status: true,
+        statusCode: false,
+        message: "Admin Not found",
+      });
+    }
+
+    const findUser = await user.findOne({
+      _id: userId,
+    });
+    if (!findUser) {
+      return res.json({
+        status: true,
+        statusCode: false,
+        message: "User Not found",
+      });
+    }
+    const updateUser = await user.updateOne({ _id: userId },{$set:{isPending:isPending}});
+
+    return res.json({
+      status: true,
+      statusCode: 200,
+      message: "User Request Update Successfully",
+      data:updateUser
+    });
+  } catch (err) {
+    return res.json({
+      status: false,
+      statusCode: 400,
+      message: err.message,
+    });
+  }
+};
 
 ///////////////////////////////privacyPolicy//////////////
 module.exports.addprivecyPolicy = async (req, res) => {
