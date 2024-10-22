@@ -181,8 +181,17 @@ module.exports.createNotification = async (req, res) => {
 module.exports.blockUnblockUser = async (req, res) => {
   try {
     const { adminId, userId, isBlock } = req.body;
-    const findAdmin = await user.findOne({ _id: adminId });
 
+    // Check if the value is either "Yes" or "No"
+    if (isBlock !== "Yes" && isBlock !== "No") {
+      return res.json({
+        status: false,
+        statusCode: 400,
+        message: "Invalid value for isBlock. Must be 'Yes' or 'No'.",
+      });
+    }
+
+    const findAdmin = await user.findOne({ _id: adminId });
     if (!findAdmin) {
       return res.json({
         status: false,
@@ -200,14 +209,28 @@ module.exports.blockUnblockUser = async (req, res) => {
       });
     }
 
+    // Update the user's isBlock status
     await user.updateOne({ _id: userId }, { isBlock: isBlock });
+
+    // Send appropriate success message based on the isBlock value
+    const message = isBlock === "Yes" 
+      ? "User Blocked Successfully" 
+      : "User Unblocked Successfully";
 
     return res.json({
       status: true,
       statusCode: 200,
-      message: "User Block Successfully",
+      message: message,
     });
   } catch (err) {
+    // Check if the error is due to Mongoose validation
+    if (err.name === 'ValidationError') {
+      return res.json({
+        status: false,
+        statusCode: 400,
+        message: "Invalid value for isBlock.",
+      });
+    }
     return res.json({
       status: false,
       statusCode: 400,
@@ -215,6 +238,7 @@ module.exports.blockUnblockUser = async (req, res) => {
     });
   }
 };
+
 
 module.exports.addNotification = async (req, res) => {
   try {
