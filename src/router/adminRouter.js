@@ -214,4 +214,11 @@ adminRouter.delete(
   varifyToken,
   adminController.deleteUserGroup
 );
+
+adminRouter.put(
+  "/userAcceptReject",
+  varifyToken,
+  verifyRoles(roleList.ADMIN),
+  adminController.userAcceptReject
+);
 module.exports = adminRouter;
