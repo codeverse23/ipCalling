@@ -398,7 +398,7 @@ module.exports.userList = async (req, res) => {
     const findUser = await user.findOne({ _id: userId });
     if (!findUser) {
       return res.json({
-        status: true,
+        status: false,
         message: "User Not Found",
         data: "",
       });
