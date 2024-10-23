@@ -391,3 +391,33 @@ module.exports.termConditionList=async(req,res)=>{
    })
   }
 };
+
+module.exports.userList = async (req, res) => {
+  try {
+    const userId = req.query.userId;
+    const findUser = await user.findOne({ _id: userId });
+    if (!findUser) {
+      return res.json({
+        status: true,
+        message: "Admin Not Found",
+        data: "",
+      });
+    }
+    const list = await user.find(
+      { role: "USER", isDeleted: false },
+      { password: 0, __v: 0, role: 0, isVerified: 0, otp: 0 }
+    );
+    return res.json({
+      status: true,
+      statusCode: 200,
+      message: "User List Shown Successfully",
+      data: list,
+    });
+  } catch (err) {
+    return res.json({
+      status: true,
+      message: "Internal Server Error",
+      data: err.message,
+    });
+  }
+};

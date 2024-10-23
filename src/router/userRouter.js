@@ -35,4 +35,5 @@ userRouter.post(
   userController.termConditionList
 );
 
+userRouter.get("/userList", varifyToken, userController.userList);
 module.exports = userRouter;
