@@ -399,7 +399,7 @@ module.exports.userList = async (req, res) => {
     if (!findUser) {
       return res.json({
         status: true,
-        message: "Admin Not Found",
+        message: "User Not Found",
         data: "",
       });
     }
