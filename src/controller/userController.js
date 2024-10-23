@@ -7,10 +7,10 @@ const user = require("../model/user");
 module.exports.signUp = async (req, res) => {
   try {
     const { name, username, email, mobile, password } = req.body;
-  
+
     var otp = Math.floor(1000 + Math.random() * 9000);
     // Find user by email
-    const findUser = await user.findOne({ email: email  });
+    const findUser = await user.findOne({ email: email });
     if (findUser) {
       return res.json({
         statusCode: 400,
@@ -18,8 +18,18 @@ module.exports.signUp = async (req, res) => {
         message: "This Email Is Already Exist",
       });
     }
+
+    // Check if username is already taken
+    const findUserName = await user.findOne({ username: username });
+    if (findUserName) {
+      return res.json({
+        statusCode: 400,
+        status: false,
+        message: "Username is already taken Please try another username",
+      });
+    }
     const userObj = { name, username, email, mobile, password, otp };
-    
+
     let data = await user.create(userObj);
     sendOtp(email, otp, name);
     return res.json({
@@ -27,7 +37,6 @@ module.exports.signUp = async (req, res) => {
       status: true,
       message: "User Create Successfully",
       data: data,
-      
     });
   } catch (err) {
     return res.json({
@@ -65,7 +74,6 @@ module.exports.checkUsername = async (req, res) => {
       status: true,
       message: "Username is available",
     });
-
   } catch (err) {
     return res.json({
       statusCode: 500,
@@ -152,13 +160,12 @@ module.exports.varifyOtp = async (req, res) => {
       { _id: findUser._id },
       { $set: { isVerified: true } }
     );
-    const role=findUser.role;
+    const role = findUser.role;
     return res.json({
       status: true,
       statusCode: 200,
       message: "User Varify Successfully",
-      role:role
-      
+      role: role,
     });
   } catch (err) {
     return res.json({
@@ -194,16 +201,16 @@ module.exports.login = async (req, res) => {
     }
 
     const role = findAdmin.role;
-    const id =findAdmin._id;
+    const id = findAdmin._id;
     // Generate JWT token
     const token = jwtToken(email, password, role); // Replace with your actual token generation logic
 
     // Update the lastActive and mark the user as active
     await user.findOneAndUpdate(
       { email: email },
-      { 
+      {
         lastActive: new Date(), // Set lastActive to current time
-        status: 'active' // Mark user as active
+        status: "active", // Mark user as active
       }
     );
 
@@ -212,8 +219,8 @@ module.exports.login = async (req, res) => {
       status: true,
       message: "Login Successfully",
       data: token,
-      role:role,
-      id
+      role: role,
+      id,
     });
   } catch (err) {
     return res.json({
@@ -287,7 +294,7 @@ module.exports.forgotPasswordSendOtp = async (req, res) => {
       });
     }
     const name = findUser.name;
-    const role=findUser.role;
+    const role = findUser.role;
     sendOtp(email, otp, name);
     await user.findOneAndUpdate({ _id: findUser._id }, { $set: { otp: otp } });
     return res.json({
@@ -295,7 +302,7 @@ module.exports.forgotPasswordSendOtp = async (req, res) => {
       statusCode: 200,
       message: "mail send successfully",
       otp: otp,
-      role:role
+      role: role,
     });
   } catch (err) {
     return res.json({
@@ -318,7 +325,7 @@ module.exports.forgotChangePassword = async (req, res) => {
       });
     }
 
-    const role=findUser.role;
+    const role = findUser.role;
     await user.findOneAndUpdate(
       { _id: findUser._id },
       { $set: { password: password } }
@@ -327,7 +334,7 @@ module.exports.forgotChangePassword = async (req, res) => {
       status: true,
       statusCode: 200,
       message: "Password Change Successfully ",
-      role:role
+      role: role,
     });
   } catch (err) {
     return res.json({
@@ -338,57 +345,57 @@ module.exports.forgotChangePassword = async (req, res) => {
   }
 };
 
-module.exports.privacyPolicyList=async(req,res)=>{
-  try{
-    const {userId}=req.body;
-    const findUser=await user.findOne({_id:userId});
-    if(!findUser){
+module.exports.privacyPolicyList = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    const findUser = await user.findOne({ _id: userId });
+    if (!findUser) {
       return res.json({
-        statusCode:400,
-        status:true,
-        message:"user not found"
-      })
+        statusCode: 400,
+        status: true,
+        message: "user not found",
+      });
     }
     const data = await privacyPolicy.find();
     return res.json({
-      statusCode:200,
-      status:true,
-      message:"Privacy policy show successfully",
-      data:data
-    })
-  }catch(err){
-   return res.json({
-    statusCode:400,
-    status:false,
-    message:err.message
-   })
+      statusCode: 200,
+      status: true,
+      message: "Privacy policy show successfully",
+      data: data,
+    });
+  } catch (err) {
+    return res.json({
+      statusCode: 400,
+      status: false,
+      message: err.message,
+    });
   }
 };
 
-module.exports.termConditionList=async(req,res)=>{
-  try{
-    const {userId}=req.body;
-    const findUser=await user.findOne({_id:userId});
-    if(!findUser){
+module.exports.termConditionList = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    const findUser = await user.findOne({ _id: userId });
+    if (!findUser) {
       return res.json({
-        statusCode:400,
-        status:true,
-        message:"user not found"
-      })
+        statusCode: 400,
+        status: true,
+        message: "user not found",
+      });
     }
     const data = await termCondition.find();
     return res.json({
-      statusCode:200,
-      status:true,
-      message:"Term ConditionList List show successfully",
-      data:data
-    })
-  }catch(err){
-   return res.json({
-    statusCode:400,
-    status:false,
-    message:err.message
-   })
+      statusCode: 200,
+      status: true,
+      message: "Term ConditionList List show successfully",
+      data: data,
+    });
+  } catch (err) {
+    return res.json({
+      statusCode: 400,
+      status: false,
+      message: err.message,
+    });
   }
 };
 
