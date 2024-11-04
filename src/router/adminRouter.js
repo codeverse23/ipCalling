@@ -185,6 +185,13 @@ adminRouter.delete(
 
 
 adminRouter.post(
+  "/groupList",
+  varifyToken,
+  uploadSingle,
+  adminController.groupList
+);
+
+adminRouter.post(
   "/createGroup",
   varifyToken,
   uploadSingle,

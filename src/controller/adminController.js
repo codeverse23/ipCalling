@@ -1456,7 +1456,6 @@ module.exports.createGroup = async (req, res) => {
   }
 };
 
-
 module.exports.addMembers = async (req, res) => {
   try {
     const { adminId, userId, groupId } = req.body;
@@ -1533,6 +1532,33 @@ module.exports.getGroupInfo = async (req, res) => {
     return res.json({
       statusCode: 400,
       status: true,
+      message: error.message,
+    });
+  }
+};
+
+module.exports.groupList = async (req, res) => {
+  try {
+    const  adminId  = req.query.adminId;
+    const findAdmin = await user.findOne({ _id: adminId });
+    if (!findAdmin) {
+      return res.json({
+        status: false,
+        statusCode: 400,
+        message: "Group Not Found",
+      });
+    }
+    const findGroup = await group.find({},{groupName:1});
+      return res.json({
+        status: true,
+        statusCode: 200,
+        message: "Group List Show Successfully",
+        data:findGroup
+      });
+  } catch (error) {
+    return res.json({
+      statusCode: 400,
+      status: false,
       message: error.message,
     });
   }
