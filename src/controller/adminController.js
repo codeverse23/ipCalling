@@ -213,9 +213,10 @@ module.exports.blockUnblockUser = async (req, res) => {
     await user.updateOne({ _id: userId }, { isBlock: isBlock });
 
     // Send appropriate success message based on the isBlock value
-    const message = isBlock === "Yes" 
-      ? "User Blocked Successfully" 
-      : "User Unblocked Successfully";
+    const message =
+      isBlock === "Yes"
+        ? "User Blocked Successfully"
+        : "User Unblocked Successfully";
 
     return res.json({
       status: true,
@@ -224,7 +225,7 @@ module.exports.blockUnblockUser = async (req, res) => {
     });
   } catch (err) {
     // Check if the error is due to Mongoose validation
-    if (err.name === 'ValidationError') {
+    if (err.name === "ValidationError") {
       return res.json({
         status: false,
         statusCode: 400,
@@ -953,7 +954,7 @@ module.exports.deleteSytemInfo = async (req, res) => {
 
 module.exports.userAcceptReject = async (req, res) => {
   try {
-    const { adminId, userId,isPending } = req.body;
+    const { adminId, userId, isPending } = req.body;
 
     const findAdmin = await user.findOne({
       _id: adminId,
@@ -976,13 +977,16 @@ module.exports.userAcceptReject = async (req, res) => {
         message: "User Not found",
       });
     }
-    const updateUser = await user.updateOne({ _id: userId },{$set:{isPending:isPending}});
+    const updateUser = await user.updateOne(
+      { _id: userId },
+      { $set: { isPending: isPending } }
+    );
 
     return res.json({
       status: true,
       statusCode: 200,
       message: "User Request Update Successfully",
-      data:updateUser
+      data: updateUser,
     });
   } catch (err) {
     return res.json({
@@ -1273,7 +1277,7 @@ module.exports.totalActiveUser = async (req, res) => {
   try {
     const adminId = req.query.adminId;
     const findAdmin = await user.findOne({ _id: adminId });
-    console.log(findAdmin,"gggggggggg",adminId)
+    console.log(findAdmin, "gggggggggg", adminId);
     if (!findAdmin) {
       return res.json({
         statusCode: 400,
@@ -1283,7 +1287,10 @@ module.exports.totalActiveUser = async (req, res) => {
     }
 
     // Count the active users
-    let activeUserCount = await user.find({ status: "active"},{name:1,email:1});
+    let activeUserCount = await user.find(
+      { status: "active" },
+      { name: 1, email: 1 }
+    );
     return res.json({
       status: true,
       statusCode: 200,
@@ -1539,7 +1546,7 @@ module.exports.getGroupInfo = async (req, res) => {
 
 module.exports.groupList = async (req, res) => {
   try {
-    const  adminId  = req.query.adminId;
+    const adminId = req.query.adminId;
     const findAdmin = await user.findOne({ _id: adminId });
     if (!findAdmin) {
       return res.json({
@@ -1548,13 +1555,13 @@ module.exports.groupList = async (req, res) => {
         message: "Group Not Found",
       });
     }
-    const findGroup = await group.find({},{groupName:1});
-      return res.json({
-        status: true,
-        statusCode: 200,
-        message: "Group List Show Successfully",
-        data:findGroup
-      });
+    const findGroup = await group.find({}, { groupName: 1 });
+    return res.json({
+      status: true,
+      statusCode: 200,
+      message: "Group List Show Successfully",
+      data: findGroup,
+    });
   } catch (error) {
     return res.json({
       statusCode: 400,
@@ -1566,7 +1573,7 @@ module.exports.groupList = async (req, res) => {
 
 module.exports.deleteGroup = async (req, res) => {
   try {
-    const { adminId,groupId } = req.body;
+    const { adminId, groupId } = req.body;
     const findAdmin = await user.findOne({ _id: adminId });
     if (!findAdmin) {
       return res.json({
@@ -1615,7 +1622,9 @@ module.exports.deleteUserGroup = async (req, res) => {
     }
 
     // Check if the member IDs are present in the group's members
-    const invalidIds = membserIds.filter(id => !foundGroup.members.includes(id));
+    const invalidIds = membserIds.filter(
+      (id) => !foundGroup.members.includes(id)
+    );
     if (invalidIds.length > 0) {
       return res.json({
         status: false,
@@ -1625,7 +1634,9 @@ module.exports.deleteUserGroup = async (req, res) => {
     }
 
     // Remove specified members from the group
-    foundGroup.members = foundGroup.members.filter(member => !membserIds.includes(member));
+    foundGroup.members = foundGroup.members.filter(
+      (member) => !membserIds.includes(member)
+    );
     await foundGroup.save();
 
     return res.json({
@@ -1633,6 +1644,78 @@ module.exports.deleteUserGroup = async (req, res) => {
       statusCode: 200,
       message: "Members Deleted Successfully",
       data: foundGroup,
+    });
+  } catch (error) {
+    return res.json({
+      statusCode: 500,
+      status: false,
+      message: error.message,
+    });
+  }
+};
+
+module.exports.changEmail = async (req, res) => {
+  try {
+    const { adminId, oldEmail, newEmail } = req.body;
+
+    // Find the group by adminId
+    const findAdmin = await user.findOne({ adminId: adminId });
+    if (!findAdmin) {
+      return res.json({
+        status: false,
+        statusCode: 400,
+        message: "Admin Not Found",
+      });
+    }
+    if(findAdmin.email!==oldEmail){
+      return res.json({
+        status: false,
+        statusCode: 400,
+        message: "You enter the wrong email",
+      });
+    }
+    const updateEmail =await user.updateOne({_id:adminId},{$set:{email:newEmail}})
+    return res.json({
+      status: true,
+      statusCode: 200,
+      message: "Email update successfully",
+      data: updateEmail,
+    });
+  } catch (error) {
+    return res.json({
+      statusCode: 500,
+      status: false,
+      message: error.message,
+    });
+  }
+};
+
+module.exports.changName = async (req, res) => {
+  try {
+    const { adminId, oldName, newName } = req.body;
+
+    // Find the group by adminId
+    const findAdmin = await user.findOne({ adminId: adminId });
+    if (!findAdmin) {
+      return res.json({
+        status: false,
+        statusCode: 400,
+        message: "Admin Not Found",
+      });
+    }
+    if(findAdmin.name!==oldName){
+      return res.json({
+        status: false,
+        statusCode: 400,
+        message: "You enter the wrong Name",
+      });
+    }
+    const updateName =await user.updateOne({_id:adminId},{$set:{name:newName}})
+    return res.json({
+      status: true,
+      statusCode: 200,
+      message: "Name update Successfully",
+      data: updateName,
     });
   } catch (error) {
     return res.json({
