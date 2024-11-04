@@ -1659,7 +1659,7 @@ module.exports.changEmail = async (req, res) => {
     const { adminId, oldEmail, newEmail } = req.body;
 
     // Find the group by adminId
-    const findAdmin = await user.findOne({ adminId: adminId });
+    const findAdmin = await user.findOne({ _id: adminId });
     if (!findAdmin) {
       return res.json({
         status: false,
@@ -1695,7 +1695,7 @@ module.exports.changName = async (req, res) => {
     const { adminId, oldName, newName } = req.body;
 
     // Find the group by adminId
-    const findAdmin = await user.findOne({ adminId: adminId });
+    const findAdmin = await user.findOne({ _id: adminId });
     if (!findAdmin) {
       return res.json({
         status: false,
