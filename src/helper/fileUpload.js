@@ -21,7 +21,6 @@ const getMulterStorage = (storagePath) => {
         },
         key: (req, file, cb) => {
             const fileName = `${storagePath}/${file.fieldname}_${Date.now()}_${file.originalname}`;
-            console.log("fileNamefileName::",fileName)
             cb(null, fileName);
         },
     });

@@ -274,9 +274,7 @@ module.exports.addNotification = async (req, res) => {
 module.exports.changPassword = async (req, res) => {
   try {
     const { adminId, password, newPassword } = req.body;
-    console.log(adminId,"adminId")
     const findAdmin = await user.findOne({ _id: adminId });
-    console.log(findAdmin,"findAdmin")
     if (!findAdmin) {
       return res.json({
         statusCode: 400,
@@ -285,7 +283,6 @@ module.exports.changPassword = async (req, res) => {
         data: "",
       });
     }
-    console.log(findAdmin.password === password,"findAdmin.password === password")
     if (findAdmin.password === password) {
       const updatePassword = await user.updateOne(
         { _id: adminId },
@@ -438,7 +435,6 @@ module.exports.addUser = async (req, res) => {
       mobile: mobile,
       password: password,
     });
-    console.log("3");
     return res.json({
       status: true,
       statusCode: 200,
@@ -1139,7 +1135,6 @@ module.exports.addQusAns = async (req, res) => {
       ans,
     });
 
-    console.log(data, "data");
     return res.json({
       status: true,
       statusCode: 200,
@@ -1180,7 +1175,6 @@ module.exports.updateQusAns = async (req, res) => {
     if (qus) qusAnsObj.qus;
     if (ans) qusAnsObj.ans;
 
-    console.log(qusAnsObj, "qusAnsObj");
     const data = await qusans.updateOne({ id: adminId }, { $set: qusAnsObj });
     return res.json({
       status: true,
@@ -1209,7 +1203,7 @@ module.exports.deleteQusAns = async (req, res) => {
       });
     }
     const deleteQus = await qusans.deleteOne({ _id: qusAnsId });
-    console.log(deleteQus, "deleteQus");
+
     return res.json({
       statusCode: 400,
       status: true,
@@ -1281,7 +1275,6 @@ module.exports.totalActiveUser = async (req, res) => {
   try {
     const adminId = req.query.adminId;
     const findAdmin = await user.findOne({ _id: adminId });
-    console.log(findAdmin, "gggggggggg", adminId);
     if (!findAdmin) {
       return res.json({
         statusCode: 400,
@@ -1369,7 +1362,6 @@ module.exports.totalApprovedReq = async (req, res) => {
   try {
     const { adminId } = req.body;
     const findAdmin = await user.findOne({ _id: adminId });
-    console.log(findAdmin, "findAdmin");
     let deActiveUser = await user.find({ isPending: "Approved" });
 
     return res.json({
