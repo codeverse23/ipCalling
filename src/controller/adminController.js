@@ -285,8 +285,9 @@ module.exports.changPassword = async (req, res) => {
         data: "",
       });
     }
+    console.log(findAdmin.password === password,"findAdmin.password === password")
     if (findAdmin.password === password) {
-      const updatePassword = await admin.findOneAndUpdate(
+      const updatePassword = await user.updateOne(
         { _id: adminId },
         { $set: { password: newPassword } }
       );
