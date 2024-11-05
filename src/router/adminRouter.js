@@ -185,6 +185,13 @@ adminRouter.delete(
 
 
 adminRouter.post(
+  "/groupList",
+  varifyToken,
+  uploadSingle,
+  adminController.groupList
+);
+
+adminRouter.post(
   "/createGroup",
   varifyToken,
   uploadSingle,
@@ -220,5 +227,19 @@ adminRouter.put(
   varifyToken,
   verifyRoles(roleList.ADMIN),
   adminController.userAcceptReject
+);
+
+adminRouter.put(
+  "/changEmail",
+  varifyToken,
+  verifyRoles(roleList.ADMIN),
+  adminController.changEmail
+);
+
+adminRouter.put(
+  "/changName",
+  varifyToken,
+  verifyRoles(roleList.ADMIN),
+  adminController.changName
 );
 module.exports = adminRouter;
