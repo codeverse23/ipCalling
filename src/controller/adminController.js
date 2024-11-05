@@ -1516,18 +1516,9 @@ module.exports.getGroupInfo = async (req, res) => {
         message: "Group Not Found",
       });
     }
-
-    // Find members by their IDs
-    const members = await user.find({
+    const membersDetails = await user.find({
       _id: { $in: findGroup.members },
-    });
-
-    const membersDetails = members.map((member) => ({
-      id: member._id,
-      name: member.name,
-      email: member.email,
-      mobile: member.mobile,
-    }));
+    },{name:1});
 
     return res.json({
       status: true,
