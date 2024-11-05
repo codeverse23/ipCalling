@@ -274,11 +274,13 @@ module.exports.addNotification = async (req, res) => {
 module.exports.changPassword = async (req, res) => {
   try {
     const { adminId, password, newPassword } = req.body;
-    const findAdmin = await admin.findOne({ _id: adminId });
+    console.log(adminId,"adminId")
+    const findAdmin = await user.findOne({ _id: adminId });
+    console.log(findAdmin,"findAdmin")
     if (!findAdmin) {
       return res.json({
         statusCode: 400,
-        status: fasle,
+        status: false,
         message: "Admin Not Found",
         data: "",
       });
@@ -289,13 +291,14 @@ module.exports.changPassword = async (req, res) => {
         { $set: { password: newPassword } }
       );
       return res.json({
-        status: 200,
+        statusCode:200,
+        status: true,
         message: "New Password Update Successfully",
         data: "",
       });
     } else {
       return res.json({
-        status: true,
+        status: false,
         message: "please enter currect password",
         data: "",
       });
@@ -1692,7 +1695,7 @@ module.exports.changEmail = async (req, res) => {
 
 module.exports.changName = async (req, res) => {
   try {
-    const { adminId, oldName, newName } = req.body;
+    const { adminId, newName } = req.body;
 
     // Find the group by adminId
     const findAdmin = await user.findOne({ _id: adminId });
@@ -1703,13 +1706,7 @@ module.exports.changName = async (req, res) => {
         message: "Admin Not Found",
       });
     }
-    if(findAdmin.name!==oldName){
-      return res.json({
-        status: false,
-        statusCode: 400,
-        message: "You enter the wrong Name",
-      });
-    }
+
     const updateName =await user.updateOne({_id:adminId},{$set:{name:newName}})
     return res.json({
       status: true,
