@@ -233,8 +233,8 @@ module.exports.login = async (req, res) => {
 
 module.exports.changPassword = async (req, res) => {
   try {
-    const { email, oldPassword, newPassword } = req.body;
-    const findUser = await user.findOne({ email: email });
+    const { userId, oldPassword, newPassword } = req.body;
+    const findUser = await user.findOne({ _id: userId });
 
     if (!findUser) {
       return res.json({
@@ -253,7 +253,7 @@ module.exports.changPassword = async (req, res) => {
     }
 
     const result = await user.updateOne(
-      { email: email },
+      { _id: userId },
       { $set: { password: newPassword } }
     );
 
