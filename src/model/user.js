@@ -62,7 +62,26 @@ const userSchema = new mongoose.Schema(
       default:[]
     },
     lastActive: { type: Date, default: Date.now }, 
-    status: { type: String, enum: ['active', 'inactive'], default: 'inactive' }, 
+    status: { type: String, enum: ['active', 'inactive'], default: 'inactive' },
+    lastSeen:{
+      type:Number,
+      enum:[1,2,3],
+      defult:1
+      /**1:everyOne
+       * 2:My contect
+       * 3:noBody
+       */
+    },
+  
+    profilePhoto:{
+      type:Number,
+      enum:[1,2,3],
+      defult:1
+      /**1:everyOne
+       * 2:mycontect
+       * 3:noBody
+       */
+    } 
   },
   { timestamps: true }
 );

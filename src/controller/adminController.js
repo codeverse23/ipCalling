@@ -1706,3 +1706,36 @@ module.exports.changName = async (req, res) => {
     });
   }
 };
+
+module.exports.privecyInfo = async (req, res) => {
+  try {
+    const { adminId  } = req.body;
+
+    // Find the group by adminId
+    const findAdmin = await user.findOne({ _id: adminId });
+    if (!findAdmin) {
+      return res.json({
+        status: false,
+        statusCode: 400,
+        message: "Admin Not Found",
+      });
+    }
+    const  blockContect= await user.countDocuments({isBlock:"Yes"})
+    return res.json({
+      status: true,
+      statusCode: 200,
+      lastSeen:findAdmin.lastSeen,
+      profilePhoto:findAdmin.profilePhoto,
+      blockContect:blockContect,
+      message: "PrivecyInfo Show Successfully",
+    });
+  
+    
+  } catch (error) {
+    return res.json({
+      statusCode: 500,
+      status: false,
+      message: error.message,
+    });
+  }
+};
