@@ -17,6 +17,14 @@ userRouter.put(
   verifyRoles(roleList.USER),
   userController.changPassword
 );
+
+userRouter.put(
+  "/changEmail",
+  //varifyToken,
+  //verifyRoles(roleList.USER),
+  userController.changEmail
+);
+
 userRouter.put(
   "/updateUsername",
   varifyToken,

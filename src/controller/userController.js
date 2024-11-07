@@ -279,6 +279,42 @@ module.exports.changPassword = async (req, res) => {
   }
 };
 
+module.exports.changEmail = async (req, res) => {
+  try {
+    const { userId, oldEmail, newEmail } = req.body;
+
+    // Find the group by adminId
+    const findUser = await user.findOne({ _id: userId });
+    if (!findUser) {
+      return res.json({
+        status: false,
+        statusCode: 400,
+        message: "User Not Found",
+      });
+    }
+    if(findUser.email!==oldEmail){
+      return res.json({
+        status: false,
+        statusCode: 400,
+        message: "You enter the wrong email",
+      });
+    }
+    const updateEmail =await user.updateOne({_id:userId},{$set:{email:newEmail}})
+    return res.json({
+      status: true,
+      statusCode: 200,
+      message: "Email update successfully",
+      data: updateEmail,
+    });
+  } catch (error) {
+    return res.json({
+      statusCode: 500,
+      status: false,
+      message: error.message,
+    });
+  }
+};
+
 module.exports.forgotPasswordSendOtp = async (req, res) => {
   try {
     const { email } = req.body;
