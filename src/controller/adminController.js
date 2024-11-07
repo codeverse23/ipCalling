@@ -142,7 +142,6 @@ module.exports.adminProfile = async (req, res) => {
       data: findAdmin,
     });
   } catch (err) {
-    console.log(err,"err")
     return res.json({
       statusCode: 400,
       status: false,
