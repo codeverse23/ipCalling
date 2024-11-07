@@ -10,6 +10,7 @@ const termCondition = require("../model/termCondition.js");
 const qusans = require("../model/askQuestion.js");
 const { model } = require("mongoose");
 const group = require("../model/group.js");
+const moment = require("moment/moment.js");
 
 ////////////////////////////admin crud/////////////////////////////////////////////
 module.exports.login = async (req, res) => {
@@ -1440,6 +1441,7 @@ module.exports.createGroup = async (req, res) => {
       groupImage: groupImageUrl, // Store the URL here
       adminId,
       members: membersArray,
+      lastMessage:"This Is For Testing"
     });
 
     let data = await newGroup.save();
@@ -1499,8 +1501,9 @@ module.exports.addMembers = async (req, res) => {
 
 module.exports.getGroupInfo = async (req, res) => {
   try {
-    const { groupId } = req.query;
+    const  groupId  = req.query.groupId;
     const findGroup = await group.findOne({ _id: groupId });
+
     if (!findGroup) {
       return res.json({
         status: false,
@@ -1508,16 +1511,18 @@ module.exports.getGroupInfo = async (req, res) => {
         message: "Group Not Found",
       });
     }
+
     const membersDetails = await user.find({
       _id: { $in: findGroup.members },
     },{name:1});
-
+    
     return res.json({
       status: true,
       statusCode: 200,
       message: "Group Information Retrieved Successfully",
       data: {
         groupId: findGroup._id,
+        lastMessage:findGroup.lastMessage,
         groupName: findGroup.groupName,
         members: membersDetails,
       },
@@ -1541,13 +1546,22 @@ module.exports.groupList = async (req, res) => {
         statusCode: 400,
         message: "Group Not Found",
       });
-    }
-    const findGroup = await group.find({}, { groupName: 1 });
+    };
+
+    const findGroup = await group.find({}, { groupName: 1,lastMessage:1,lastMessageTime:1 });
+    const formattedGroups = findGroup.map(group=>{
+      const formattedTime= moment(group.lastMessageTime).format("hh:mm:A");
+      return{
+        ...group.toObject(),
+        lastMessageTime: formattedTime,
+      } 
+
+    })
     return res.json({
       status: true,
       statusCode: 200,
       message: "Group List Show Successfully",
-      data: findGroup,
+      data: formattedGroups,
     });
   } catch (error) {
     return res.json({
