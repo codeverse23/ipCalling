@@ -1753,3 +1753,35 @@ module.exports.privecyInfo = async (req, res) => {
     });
   }
 };
+
+module.exports.updatePrivecyInfo = async (req, res) => {
+  try {
+    const { adminId,lastSeen,profilePhoto  } = req.body;
+
+    // Find the group by adminId
+    const findAdmin = await user.findOne({ _id: adminId });
+    if (!findAdmin) {
+      return res.json({
+        status: false,
+        statusCode: 400,
+        message: "Admin Not Found",
+      });
+    }
+    const updateObj={};
+    if (lastSeen) {updateObj.lastSeen=lastSeen} 
+    if (profilePhoto){updateObj.profilePhoto=profilePhoto}
+    const updateInfo = await user.updateOne({_id:adminId},{$set:updateObj})
+    return res.json({
+      status: true,
+      statusCode: 200,
+      message: "Privacy Info Update successfully",
+      data:updateInfo
+    });
+  } catch (error) {
+    return res.json({
+      statusCode: 500,
+      status: false,
+      message: error.message,
+    });
+  }
+};

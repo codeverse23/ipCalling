@@ -233,4 +233,11 @@ adminRouter.post(
   verifyRoles(roleList.ADMIN),
   adminController.privecyInfo
 );
+
+adminRouter.put(
+  "/updatePrivecyInfo",
+  varifyToken,
+  verifyRoles(roleList.ADMIN),
+  adminController.updatePrivecyInfo
+);
 module.exports = adminRouter;
