@@ -20,8 +20,8 @@ userRouter.put(
 
 userRouter.put(
   "/changEmail",
-  //varifyToken,
-  //verifyRoles(roleList.USER),
+  varifyToken,
+  verifyRoles(roleList.USER),
   userController.changEmail
 );
 
