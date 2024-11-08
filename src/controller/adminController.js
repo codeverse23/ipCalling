@@ -134,7 +134,7 @@ module.exports.deleteUser = async (req, res) => {
 module.exports.adminProfile = async (req, res) => {
   try {
     const adminId = req.query.adminId;
-    const findAdmin = await user.findOne({ _id: adminId },{name:1,email:1,mobile:1});
+    const findAdmin = await user.findOne({ _id: adminId },{name:1,email:1,mobile:1,profileImage:1});
     return res.json({
       statusCode: 200,
       status: true,
