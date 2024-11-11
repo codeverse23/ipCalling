@@ -1,4 +1,5 @@
 const { sendOtp } = require("../helper/email");
+const { genJwt } = require("../helper/genrateJwt.js");
 const { jwtToken } = require("../helper/jwt");
 const privacyPolicy = require("../model/privacyPolicy");
 const termCondition = require("../model/termCondition.js");
@@ -257,7 +258,7 @@ module.exports.genrateToken = async (req, res) => {
 
     const role = findUser.role;
     // Generate JWT token
-    const token = jwtToken(userId,  role); // Replace with your actual token generation logic
+    const token = genJwt(userId, role); // Replace with your actual token generation logic
 
     // Update the lastActive and mark the user as active
     await user.findOneAndUpdate(
