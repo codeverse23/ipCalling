@@ -273,6 +273,7 @@ module.exports.genrateToken = async (req, res) => {
       status: true,
       message: "token genrate  Successfully",
       data: token,
+      role:role
     });
   } catch (err) {
     return res.json({
