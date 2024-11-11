@@ -43,5 +43,19 @@ userRouter.post(
   userController.termConditionList
 );
 
+userRouter.post(
+  "/privecyInfo",
+  varifyToken,
+  verifyRoles(roleList.ADMIN),
+  userController.privecyInfo
+);
+
+userRouter.put(
+  "/updatePrivecyInfo",
+  varifyToken,
+  verifyRoles(roleList.ADMIN),
+  userController.updatePrivecyInfo
+);
+
 userRouter.get("/userList", varifyToken, userController.userList);
 module.exports = userRouter;

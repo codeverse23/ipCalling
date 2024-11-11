@@ -299,6 +299,14 @@ module.exports.changEmail = async (req, res) => {
         message: "You enter the wrong email",
       });
     }
+    const findNewEmail =await user.findOne({email:newEmail});
+    if (findNewEmail){
+      return res.json({
+        status: false,
+        statusCode: 400,
+        message: "this Email already in use please use anather email",
+      });
+    }
     const updateEmail =await user.updateOne({_id:userId},{$set:{email:newEmail}})
     return res.json({
       status: true,
@@ -461,6 +469,71 @@ module.exports.userList = async (req, res) => {
       status: true,
       message: "Internal Server Error",
       data: err.message,
+    });
+  }
+};
+
+module.exports.privecyInfo = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    // Find the group by adminId
+    const findUser = await user.findOne({ _id: userId });
+    if (!findUser) {
+      return res.json({
+        status: false,
+        statusCode: 400,
+        message: "Admin Not Found",
+      });
+    }
+    const  blockContect= await user.countDocuments({isBlock:"Yes"})
+    return res.json({
+      status: true,
+      statusCode: 200,
+      lastSeen:findAdmin.lastSeen,
+      profilePhoto:findAdmin.profilePhoto,
+      blockContect:blockContect,
+      message: "PrivecyInfo Show Successfully",
+    });
+  
+    
+  } catch (error) {
+    return res.json({
+      statusCode: 500,
+      status: false,
+      message: error.message,
+    });
+  }
+};
+
+module.exports.updatePrivecyInfo = async (req, res) => {
+  try {
+    const { adminId,lastSeen,profilePhoto  } = req.body;
+
+    // Find the group by adminId
+    const findAdmin = await user.findOne({ _id: adminId });
+    if (!findAdmin) {
+      return res.json({
+        status: false,
+        statusCode: 400,
+        message: "Admin Not Found",
+      });
+    }
+    const updateObj={};
+    if (lastSeen) {updateObj.lastSeen=lastSeen} 
+    if (profilePhoto){updateObj.profilePhoto=profilePhoto}
+    const updateInfo = await user.updateOne({_id:adminId},{$set:updateObj})
+    return res.json({
+      status: true,
+      statusCode: 200,
+      message: "Privacy Info Update successfully",
+      data:updateInfo
+    });
+  } catch (error) {
+    return res.json({
+      statusCode: 500,
+      status: false,
+      message: error.message,
     });
   }
 };
