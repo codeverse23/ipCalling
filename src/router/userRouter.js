@@ -46,14 +46,12 @@ userRouter.post(
 userRouter.post(
   "/privecyInfo",
   varifyToken,
-  verifyRoles(roleList.ADMIN),
   userController.privecyInfo
 );
 
 userRouter.put(
   "/updatePrivecyInfo",
   varifyToken,
-  verifyRoles(roleList.ADMIN),
   userController.updatePrivecyInfo
 );
 

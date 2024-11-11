@@ -486,13 +486,11 @@ module.exports.privecyInfo = async (req, res) => {
         message: "Admin Not Found",
       });
     }
-    const  blockContect= await user.countDocuments({isBlock:"Yes"})
     return res.json({
       status: true,
       statusCode: 200,
-      lastSeen:findAdmin.lastSeen,
-      profilePhoto:findAdmin.profilePhoto,
-      blockContect:blockContect,
+      lastSeen:findUser.lastSeen,
+      profilePhoto:findUser.profilePhoto,
       message: "PrivecyInfo Show Successfully",
     });
   
@@ -508,21 +506,21 @@ module.exports.privecyInfo = async (req, res) => {
 
 module.exports.updatePrivecyInfo = async (req, res) => {
   try {
-    const { adminId,lastSeen,profilePhoto  } = req.body;
+    const { userId,lastSeen,profilePhoto  } = req.body;
 
     // Find the group by adminId
-    const findAdmin = await user.findOne({ _id: adminId });
-    if (!findAdmin) {
+    const findUser = await user.findOne({ _id: userId });
+    if (!findUser) {
       return res.json({
         status: false,
         statusCode: 400,
-        message: "Admin Not Found",
+        message: "User Not Found",
       });
     }
     const updateObj={};
     if (lastSeen) {updateObj.lastSeen=lastSeen} 
     if (profilePhoto){updateObj.profilePhoto=profilePhoto}
-    const updateInfo = await user.updateOne({_id:adminId},{$set:updateObj})
+    const updateInfo = await user.updateOne({_id:userId},{$set:updateObj})
     return res.json({
       status: true,
       statusCode: 200,
