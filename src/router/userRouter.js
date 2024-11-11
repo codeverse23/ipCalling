@@ -55,5 +55,11 @@ userRouter.put(
   userController.updatePrivecyInfo
 );
 
+
+userRouter.post(
+  "/genrateToken",
+  userController.genrateToken
+);
+
 userRouter.get("/userList", varifyToken, userController.userList);
 module.exports = userRouter;

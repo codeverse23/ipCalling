@@ -231,6 +231,58 @@ module.exports.login = async (req, res) => {
   }
 };
 
+module.exports.genrateToken = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    // Find admin by email
+    const findUser = await user.findOne({ _id: userId });
+    if (!findUser) {
+      return res.json({
+        statusCode: 400,
+        status: false,
+        message: "User Not Found",
+      });
+    }
+
+    // // Compare the provided password with the hashed password in the database
+    // const isMatch = password === findUser.password;
+    // if (!isMatch) {
+    //   return res.json({
+    //     statusCode: 400,
+    //     status: false,
+    //     message: "Please Enter the correct password",
+    //   });
+    // }
+
+    const role = findUser.role;
+    // Generate JWT token
+    const token = jwtToken(userId,  role); // Replace with your actual token generation logic
+
+    // Update the lastActive and mark the user as active
+    await user.findOneAndUpdate(
+      { _id: userId },
+      {
+        lastActive: new Date(), // Set lastActive to current time
+        status: "active", // Mark user as active
+      }
+    );
+
+    return res.json({
+      statusCode: 200,
+      status: true,
+      message: "token genrate  Successfully",
+      data: token,
+    });
+  } catch (err) {
+    return res.json({
+      statusCode: 400,
+      status: false,
+      message: err.message,
+    });
+  }
+};
+
 module.exports.changPassword = async (req, res) => {
   try {
     const { userId, oldPassword, newPassword } = req.body;

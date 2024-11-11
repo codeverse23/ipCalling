@@ -65,6 +65,8 @@ module.exports.login = async (req, res) => {
   }
 };
 
+
+
 module.exports.userList = async (req, res) => {
   try {
     const adminId = req.query.adminId;
