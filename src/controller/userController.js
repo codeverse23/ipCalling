@@ -371,6 +371,35 @@ module.exports.getProfile = async (req, res) => {
 };
 
 
+module.exports.updateProfileImage = async (req, res) => {
+  try {
+    const { userId,image} = req.body;
+
+    // Find the group by adminId
+    const findUser = await user.findOne({ _id: userId });
+    if (!findUser) {
+      return res.json({
+        status: false,
+        statusCode: 400,
+        message: "User Not Found",
+      });
+    }
+     const updateInfo = await user.updateOne({_id:userId},{$set:{image:image}})
+    return res.json({
+      status: true,
+      statusCode: 200,
+      message: "Privacy Info Update successfully",
+      data:updateInfo
+    });
+  } catch (error) {
+    return res.json({
+      statusCode: 500,
+      status: false,
+      message: error.message,
+    });
+  }
+};
+
 module.exports.changEmail = async (req, res) => {
   try {
     const { userId, oldEmail, newEmail } = req.body;

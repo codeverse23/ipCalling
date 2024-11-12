@@ -64,8 +64,15 @@ userRouter.post(
 
 userRouter.get(
   "/getProfile",
-  //varifyToken,
+  varifyToken,
   userController.getProfile
 );
+
+userRouter.put(
+  "/updateProfileImage",
+  varifyToken,
+  userController.updateProfileImage
+);
+
 userRouter.get("/userList", varifyToken, userController.userList);
 module.exports = userRouter;
