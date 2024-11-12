@@ -1,9 +1,11 @@
 const { sendOtp } = require("../helper/email");
 const { genJwt } = require("../helper/genrateJwt.js");
 const { jwtToken } = require("../helper/jwt");
+const group = require("../model/group.js");
 const privacyPolicy = require("../model/privacyPolicy");
 const termCondition = require("../model/termCondition.js");
 const user = require("../model/user");
+const moment = require("moment/moment.js");
 
 module.exports.signUp = async (req, res) => {
   try {
@@ -652,6 +654,56 @@ module.exports.updatePrivecyInfo = async (req, res) => {
   } catch (error) {
     return res.json({
       statusCode: 500,
+      status: false,
+      message: error.message,
+    });
+  }
+};
+
+module.exports.userGroupList = async (req, res) => {
+  try {
+    const userId = req.query.userId;
+
+    // Find user by userId (optional validation)
+    const findUser = await user.findOne({ _id: userId });
+    if (!findUser) {
+      return res.json({
+        status: false,
+        statusCode: 400,
+        message: "User Not Found",
+      });
+    }
+
+    // Find groups where the user is part of the members array
+    const findGroup = await group.find({ members: userId }, { groupName: 1, lastMessage: 1, lastMessageTime: 1 });
+
+    if (findGroup.length === 0) {
+      return res.json({
+        status: false,
+        statusCode: 404,
+        message: "No Groups Found for this User",
+      });
+    }
+
+    // Format the lastMessageTime
+    const formattedGroups = findGroup.map(group => {
+      const formattedTime = moment(group.lastMessageTime).format("hh:mm:A");
+      return {
+        ...group.toObject(),
+        lastMessageTime: formattedTime,
+      };
+    });
+
+    // Return the formatted groups
+    return res.json({
+      status: true,
+      statusCode: 200,
+      message: "Group List Show Successfully",
+      data: formattedGroups,
+    });
+  } catch (error) {
+    return res.json({
+      statusCode: 400,
       status: false,
       message: error.message,
     });

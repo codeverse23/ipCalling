@@ -77,5 +77,12 @@ userRouter.put(
   userController.updateProfileImage
 );
 
+
+userRouter.get(
+  "/userGroupList",
+  varifyToken,
+  userController.userGroupList
+);
+
 userRouter.get("/userList", varifyToken, userController.userList);
 module.exports = userRouter;
