@@ -65,8 +65,6 @@ module.exports.login = async (req, res) => {
   }
 };
 
-
-
 module.exports.userList = async (req, res) => {
   try {
     const adminId = req.query.adminId;
@@ -87,6 +85,38 @@ module.exports.userList = async (req, res) => {
       statusCode: 200,
       message: "User List Shown Successfully",
       data: list,
+    });
+  } catch (err) {
+    return res.json({
+      status: true,
+      message: "Internal Server Error",
+      data: err.message,
+    });
+  }
+};
+
+module.exports.getUserProfile = async (req, res) => {
+  try {
+    const {adminId,userId}=req.body 
+    const findAdmin = await user.findOne({ _id: adminId });
+    if (!findAdmin) {
+      return res.json({
+        status: true,
+        message: "Admin Not Found",
+        data: "",
+      });
+    }
+
+    const data = await user.findOne(
+      { _id:userId },
+      { name:1,image:1 }
+    );
+
+    return res.json({
+      status: true,
+      statusCode: 200,
+      message: "User Profile Show Successfully",
+      data: data,
     });
   } catch (err) {
     return res.json({
