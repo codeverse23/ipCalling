@@ -61,5 +61,11 @@ userRouter.post(
   userController.genrateToken
 );
 
+
+userRouter.get(
+  "/getProfile",
+  //varifyToken,
+  userController.getProfile
+);
 userRouter.get("/userList", varifyToken, userController.userList);
 module.exports = userRouter;

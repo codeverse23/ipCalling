@@ -333,6 +333,44 @@ module.exports.changPassword = async (req, res) => {
   }
 };
 
+module.exports.getProfile = async (req, res) => {
+  try {
+    const { userId } = req.query;
+    console.log(userId); // Log the userId for debugging purposes
+
+    const findUser = await user.findOne(
+      { _id: userId }, // Searching by userId
+      { name: 1, email: 1, image: 1, username: 1 } // Only return selected fields
+    );
+
+    if (!findUser) {
+      return res.status(400).json({
+        status: false,
+        message: "User does not exist",
+      });
+    }
+
+    // If the user's image is empty, provide a default image URL
+    if (findUser.image === "") {
+      findUser.image = "https://cell121.s3.eu-north-1.amazonaws.com/groupImage/groupImage_1730968991481_Screenshot%20%28101%29.png";
+    }
+
+    // Return the user profile data
+    return res.status(200).json({
+      status: true,
+      message: "User Profile shown successfully",
+      data: findUser,
+    });
+
+  } catch (err) {
+    return res.status(400).json({
+      status: false,
+      message: err.message,
+    });
+  }
+};
+
+
 module.exports.changEmail = async (req, res) => {
   try {
     const { userId, oldEmail, newEmail } = req.body;

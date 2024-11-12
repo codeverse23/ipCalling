@@ -81,6 +81,10 @@ const userSchema = new mongoose.Schema(
        * 2:mycontect
        * 3:noBody
        */
+    },
+    image:{
+      type:String,
+      default:""
     } 
   },
   { timestamps: true }
