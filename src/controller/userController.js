@@ -370,10 +370,10 @@ module.exports.getProfile = async (req, res) => {
   }
 };
 
-
 module.exports.updateProfileImage = async (req, res) => {
   try {
-    const { userId,image} = req.body;
+    const { userId} = req.body;
+    const image = req.file.location;
 
     // Find the group by adminId
     const findUser = await user.findOne({ _id: userId });
@@ -385,11 +385,12 @@ module.exports.updateProfileImage = async (req, res) => {
       });
     }
      const updateInfo = await user.updateOne({_id:userId},{$set:{image:image}})
+     const data =await user.findOne({_id:userId},{image:1})
     return res.json({
       status: true,
       statusCode: 200,
-      message: "Privacy Info Update successfully",
-      data:updateInfo
+      message: "Profile Image Update successfully",
+      data:data
     });
   } catch (error) {
     return res.json({

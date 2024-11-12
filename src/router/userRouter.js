@@ -4,6 +4,8 @@ const userController = require("../controller/userController");
 const verifyRoles = require("../../middlewares/verifyRoles");
 const roleList = require("../../src/consts/autho");
 const { varifyToken } = require("../helper/varifyTokenFn");
+const getMulterStorage = require("../helper/fileUpload");
+const uploadSingle = getMulterStorage("profileImage").single("profileImage");
 
 userRouter.post("/signUp", userController.signUp);
 userRouter.post("/checkUsername", userController.checkUsername);
@@ -71,6 +73,7 @@ userRouter.get(
 userRouter.put(
   "/updateProfileImage",
   varifyToken,
+  uploadSingle,
   userController.updateProfileImage
 );
 
