@@ -302,7 +302,7 @@ module.exports.addNotification = async (req, res) => {
     });
   }
 };
-
+//
 module.exports.changPassword = async (req, res) => {
   try {
     const { adminId, password, newPassword } = req.body;
